@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>올팍주차:88 parking | 올림픽공원 스마트 주차 안내</title>
+  <meta name="description" content="올팍주차:88 parking — 올림픽공원 주차 정보, 공연 일정과 시간대별 혼잡 예상 정보를 한곳에서 확인하세요. 운영기관과 무관한 독립 정보 서비스입니다.">
+  <meta name="theme-color" content="#1d3263">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy:#1d3263;--blue:#315399;--orange:#e99b30;--cream:#f7f4ec;--white:#fffdfa;--ink:#1c3461;--muted:#7d889a;--line:#e3e3db;--green:#369e78;--red:#d95d4e; }
+    * { box-sizing:border-box; }
+    body { margin:0;background:var(--cream);font-family:'Noto Sans KR',sans-serif;color:var(--ink); }
+    button,select,input { font:inherit; }
+    button { cursor:pointer; }
+    .layout { display:grid;grid-template-columns:285px minmax(0,1fr);min-height:100vh; }
+    .sidebar { background:var(--navy);color:white;padding:34px 28px;position:sticky;top:0;height:100vh;height:100dvh;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:#7694c4 var(--navy); }
+    .sidebar::-webkit-scrollbar { width:7px; }
+    .sidebar::-webkit-scrollbar-thumb { background:#7694c4;border-radius:12px; }
+    .sidebar::-webkit-scrollbar-track { background:var(--navy); }
+    .sidebar .logo,.sidebar .tagline,.sidebar .rings,.sidebar .nav-caption,.sidebar .nav,.sidebar-bottom { flex-shrink:0; }
+    .logo { font-weight:900;font-size:28px;line-height:1.1;letter-spacing:-1.6px;white-space:nowrap; }
+    .logo .logo-hangul{color:#fff}
+    .logo .logo-mark{color:#eaaa42;letter-spacing:-2px}
+    .logo small{display:block;margin-top:8px;color:#a8c4ed;font:700 15px 'DM Mono',monospace;letter-spacing:5px;text-transform:lowercase}
+    .tagline { font:11px 'DM Mono',monospace;letter-spacing:2.5px;color:#a5c0ec;margin-top:21px; }
+    .rings { display:flex;justify-content:center;align-items:center;margin:48px 0 55px;transform:rotate(-10deg); }
+    .rings i { display:block;width:28px;height:28px;border-radius:50%;border:6px solid;margin-left:-4px; }
+    .rings i:nth-child(1){color:#70a5e8}.rings i:nth-child(2){color:#f3c64a}.rings i:nth-child(3){color:#152752}.rings i:nth-child(4){color:#54a777}.rings i:nth-child(5){color:#e96856}
+    .nav-caption { color:#91b1e1;font:11px 'DM Mono',monospace;letter-spacing:1.7px;margin:0 12px 17px; }
+    .nav { display:grid;gap:7px; }
+    .nav button { background:transparent;color:#c5d9f7;border:0;text-align:left;border-radius:9px;padding:18px;display:flex;align-items:center;gap:15px;font-size:14px;font-weight:700; }
+    .nav button:hover { background:#2c477b; }
+    .nav button.active { background:white;color:var(--navy);border-left:5px solid var(--orange);padding-left:13px; }
+    .nav-icon { font-size:21px;font-weight:400;width:25px;text-align:center; }
+    .sidebar-bottom { margin-top:auto;border-top:1px solid #45608e;padding-top:22px;font:11px/2.2 'DM Mono',monospace;letter-spacing:1px;color:#89ace5; }
+    @media(max-height:850px) and (min-width:781px) {
+      .sidebar{padding-top:22px;padding-bottom:22px}
+      .rings{margin:23px 0 25px}
+      .nav-caption{margin-bottom:10px}
+      .nav{gap:4px}
+      .nav button{padding-top:13px;padding-bottom:13px}
+      .sidebar-bottom{padding-top:12px}
+    }
+    .page { min-width:0; }
+    .topbar { display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--white);border-bottom:1px solid var(--line);padding:30px 40px; }
+    .breadcrumb { font:12px 'DM Mono',monospace;letter-spacing:1px;color:#71829e; }
+    .preview-badge { padding:11px 17px;border:1px solid #e6d5b8;border-radius:24px;color:#9d6625;font-size:12px;font-weight:800;background:#fffaf1;white-space:nowrap; }
+    .preview-badge:before { content:'●';color:var(--orange);margin-right:8px; }
+    .content { padding:42px 40px 65px;max-width:1580px;margin:auto; }
+    .eyebrow { color:#dc8732;font:700 12px 'DM Mono',monospace;letter-spacing:2.2px;margin-bottom:20px; }
+    .heading-row { display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:32px; }
+    h1 { font-size:clamp(30px,3.4vw,51px);line-height:1.27;letter-spacing:-2px;margin:0;font-weight:900; }
+    h1 span { color:var(--blue); }
+    .subtitle { color:#8190a6;font-size:14px;margin:18px 0 0; }
+    .date { border:1px solid #d5dce5;background:white;border-radius:8px;padding:16px 20px;white-space:nowrap;font:700 13px 'DM Mono',monospace; }
+    .hero { display:grid;grid-template-columns:1.5fr .9fr;background:var(--blue);border-radius:18px;overflow:hidden;color:white;min-height:310px; }
+    .hero-copy { padding:39px 43px; }
+    .hero-label { display:inline-block;background:var(--orange);color:#243962;padding:11px 15px;font:700 12px 'DM Mono',monospace;letter-spacing:.5px; }
+    .hero h2 { font-size:clamp(27px,2.7vw,39px);line-height:1.48;letter-spacing:-1.7px;margin:28px 0 14px; }
+    .hero p { font-size:14px;line-height:1.9;color:#d5e2ff;margin:0 0 26px; }
+    .hero button,.primary { border:0;border-radius:6px;background:white;color:var(--blue);font-size:13px;font-weight:800;padding:14px 21px; }
+    .hero button:hover { background:#ffe6b9; }
+    .hero-actions{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+    .hero-actions .hero-secondary{background:transparent;border:1px solid #c1d2fa;color:#fff}
+    .hero-actions .hero-secondary:hover{background:#365da2}
+    .hero-live{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 22px;padding:11px 14px;border:1px solid rgba(255,255,255,.33);border-radius:9px;background:rgba(12,31,80,.26);font-size:13px}
+    .hero-live-label{padding:5px 8px;background:#f1b348;color:#1e386f;border-radius:5px;font-weight:900;font-size:11px;white-space:nowrap}
+    .hero-live strong{font-size:15px}
+    .hero-live a{color:#fff;text-underline-offset:3px;font-size:12px}
+    .hero-art .parking-sign{position:absolute;left:20%;top:23%;display:grid;place-items:center;width:120px;height:120px;border:8px solid #294a86;border-radius:26px;background:#fdf4df;color:#294a86;font:900 85px 'Noto Sans KR',sans-serif;box-shadow:12px 12px 0 #294a86;transform:rotate(-8deg);z-index:1}
+    .hero-art { background:#e4a040;position:relative;overflow:hidden;min-height:280px; }
+    .hero-art:before { content:'';position:absolute;inset:-80px -100px auto auto;width:340px;height:340px;border:47px solid #fff4df;border-radius:50%; }
+    .hero-art:after { content:'';position:absolute;left:-45px;bottom:-115px;width:270px;height:270px;border:39px solid #264681;border-radius:50%; }
+    .hero-art .eighty { position:absolute;right:24px;top:12px;color:#2a4b86;font-size:105px;font-weight:900;letter-spacing:-15px; }
+    .hero-art .arch { position:absolute;right:42px;bottom:-108px;width:235px;height:235px;border:30px solid #fff4df;border-radius:50%; }
+    .hero-art .caption { position:absolute;right:25px;bottom:25px;color:#244780;font:700 12px 'DM Mono',monospace;letter-spacing:2px; }
+    @media(max-width:800px){.hero-art .parking-sign{width:88px;height:88px;font-size:60px;left:18%;top:25%}}
+    .section-heading { display:flex;justify-content:space-between;align-items:center;gap:15px;margin:39px 0 18px; }
+    .section-heading h3 { margin:0;font-size:21px;letter-spacing:-.8px; }
+    .section-heading small { color:#a0a8ae;font:11px 'DM Mono',monospace; }
+    .metrics { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px; }
+    .metric,.panel { background:var(--white);border:1px solid var(--line);border-radius:13px;box-shadow:0 8px 25px rgba(20,50,80,.04); }
+    .metric { padding:20px;min-height:150px; }
+    .metric-label { color:#8390a2;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:space-between; }
+    .metric-icon { display:grid;place-items:center;background:#eff3f8;color:var(--blue);width:32px;height:32px;border-radius:8px;font-size:18px; }
+    .metric-value { margin-top:19px;font-size:27px;font-weight:900; }
+    .metric-value small { font-size:12px;font-weight:600;color:#93a0b1; }
+    .metric-detail { color:#95a0ae;font-size:11px;margin-top:5px; }
+    .dashboard-grid { display:grid;grid-template-columns:1.55fr 1fr;gap:17px; }
+    .panel { padding:24px;min-width:0; }
+    .panel-header { display:flex;justify-content:space-between;gap:10px;align-items:start;margin-bottom:22px; }
+    .panel-header h4 { margin:0;font-size:16px; }
+    .panel-header p { margin:7px 0 0;color:#96a2ac;font-size:11px; }
+    .panel select { background:white;border:1px solid var(--line);border-radius:7px;padding:8px;font-size:12px;color:var(--ink); }
+    .chart { height:190px;display:flex;align-items:end;gap:8px;border-bottom:1px solid #dfe4e6;background:repeating-linear-gradient(to top, transparent 0, transparent 45px, #eef0ef 46px); }
+    .chart-bar-wrap { flex:1;height:100%;display:flex;align-items:end; }
+    .chart-bar { width:100%;max-width:42px;margin:auto;height:var(--height);background:#aec9de;border-radius:5px 5px 0 0;transition:height .3s; }
+    .chart-bar.medium { background:var(--orange); }.chart-bar.high { background:var(--red); }
+    .chart-bar.slight { background:#6FA76B; }.chart-bar.full { background:#CB433E; }
+    .chart-labels { display:flex;gap:8px;margin-top:11px; }.chart-labels span { flex:1;text-align:center;font:10px 'DM Mono',monospace;color:#8190a3; }
+    .legend { display:flex;gap:17px;margin:20px 0;font-size:11px;color:#7b899a; }
+    .legend b { display:inline-block;width:9px;height:9px;border-radius:2px;background:#aec9de;margin-right:5px; }.legend b.medium{background:var(--orange)}.legend b.high{background:var(--red)}
+    .legend b.slight { background:#6FA76B; }.legend b.full { background:#CB433E; }
+    .legend { flex-wrap:wrap; }
+    .recommend { background:#eaf6ef;border:1px solid #cfe8d8;border-radius:8px;padding:17px;color:#227657; }
+    .recommend strong { font-size:13px; }.recommend p { color:#537e6d;font-size:12px;line-height:1.75;margin:8px 0 0; }
+    .personal-predict { margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:12px;background:#fafbfe; }
+    .personal-predict h4 { margin:0 0 6px;font-size:17px; }.personal-predict p { font-size:12px;color:#7b8798;line-height:1.6; }
+    .predict-fields { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0; }
+    .predict-fields label { display:flex;flex-direction:column;gap:5px;color:#4e5f7c;font-size:12px;font-weight:700; }
+    .predict-fields input,.predict-fields select { width:100%;min-width:0;padding:10px;background:#fff;border:1px solid #ccd5df;border-radius:7px;color:var(--ink); }
+    .predict-submit { padding:11px 16px;background:var(--navy);color:#fff;border:0;border-radius:8px;cursor:pointer;font-weight:700; }
+    .area-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+    .area-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;min-width:0}
+    .area-card.recommended{background:#fffbf3;border:2px solid #d19b42;border-left:6px solid #c68b2e;box-shadow:0 4px 18px rgba(153,105,35,.12);padding:17px 17px 17px 14px}
+    .area-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+    .area-card-top h4{flex:1 1 230px}
+    .area-recommend-badge{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:#28446a;color:#fff;border:1px solid #28446a;padding:7px 10px;border-radius:4px;font-size:12px;font-weight:800;letter-spacing:.1px;box-shadow:0 2px 5px rgba(34,55,87,.13)}
+    .area-recommend-hint{color:#85581d!important;font-weight:700!important;background:#fff2d5;border-radius:4px;padding:6px 9px;margin:8px 0!important}
+    .area-card h4{margin:0 0 7px;font-size:17px;color:var(--navy)}
+    .area-card p{font-size:12px;color:#74829a;line-height:1.7;margin:5px 0}
+    .area-scorebar{height:9px;background:#e9eef3;border-radius:99px;overflow:hidden;margin:12px 0}
+    .area-scorebar span{display:block;height:100%;border-radius:99px}
+    .area-level{font-size:13px;font-weight:800}
+    @media(max-width:760px){.area-grid{grid-template-columns:1fr}}
+    .predict-result { margin-top:12px;padding:12px;background:#edf4ff;border-radius:8px;color:var(--navy);font-size:13px;line-height:1.7; }
+    .predict-result.is-forecast{padding:18px 20px;background:#f8fbff;border:1px solid #d8e3f2;border-left:5px solid #759fc8;border-radius:12px;box-shadow:0 4px 15px rgba(28,52,97,.04)}
+    .predict-result.is-forecast.level-slight{border-left-color:#69a874;background:#f5fbf5}
+    .predict-result.is-forecast.level-medium{border-left-color:#e2a146;background:#fffbf3}
+    .predict-result.is-forecast.level-full{border-left-color:#d35d53;background:#fff7f5}
+    .personal-result-title{color:#74829a;font-size:12px;font-weight:700;letter-spacing:.2px;margin-bottom:9px}
+    .personal-result-main{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+    .personal-result-badge{display:inline-flex;align-items:center;padding:7px 13px;border-radius:999px;background:#dceaf9;color:#2a5989;font-size:14px;font-weight:900}
+    .level-slight .personal-result-badge{background:#e1f2df;color:#2d753e}
+    .level-medium .personal-result-badge{background:#fff0cf;color:#936114}
+    .level-full .personal-result-badge{background:#ffe3e0;color:#ae3c32}
+    .personal-result-rate{font-size:27px;font-weight:900;letter-spacing:-1px;color:var(--navy);line-height:1.2}
+    .personal-result-rate small{font-size:12px;font-weight:600;color:#8490a2;letter-spacing:0;margin-left:5px}
+    .personal-result-note{display:block;margin-top:12px;padding-top:10px;border-top:1px solid rgba(69,95,132,.12);font-size:11px;color:#7c899a;line-height:1.6}
+    .personal-performance-info{margin:4px 0 15px;padding:14px 16px;border:1px solid #d7e5f1;background:#f1f6fc;border-radius:10px;color:#425878;font-size:12px;line-height:1.65}
+    .personal-performance-heading{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:800;color:var(--navy)}
+    .personal-performance-badge{background:#dfeafa;color:#284a85;border-radius:100px;padding:3px 9px;font-size:11px;font-weight:800}
+    .personal-performance-item{border-top:1px solid #dae3ef;margin-top:8px;padding-top:8px}
+    .personal-performance-item strong{display:block;color:#2b4069;font-size:12px}
+    .personal-performance-item small{display:block;color:#71839c;font-size:11px;margin-top:2px}
+    .visit-results { display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:13px; }
+    .visit-slot { background:#fff;border:1px solid #dfe5ed;border-radius:9px;padding:12px;display:flex;justify-content:space-between;gap:8px;font-size:13px; }
+    .visit-slot.low { border-color:#aac8e6;background:#eff6ff; }.visit-slot.medium { border-color:#f2d49d;background:#fff8e9; }.visit-slot.high { border-color:#f1b6ab;background:#fff1ee; }
+    .visit-slot.slight {border-color:#aed8b3;background:#f0f9f0;}.visit-slot.full{border-color:#ee9290;background:#ffeae7;}
+    .live-info {margin-bottom:20px;background:#eff6ff;border:1px solid #d4e2f7;border-radius:12px;padding:18px;color:var(--navy);}
+    .live-info strong{display:block;font-size:24px;margin:8px 0}.live-info small{color:#627694;line-height:1.7}
+    .live-info-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .live-level{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:800;color:#27527e;background:#d9e8f9}
+    .live-level.slight{color:#326735;background:#e0f1df}
+    .live-level.medium{color:#885114;background:#fff0ca}
+    .live-level.full{color:#a72b28;background:#ffe2df}
+    .live-progress{height:13px;background:#dfe8f3;border-radius:100px;overflow:hidden;margin:15px 0 9px}
+    .live-progress-fill{height:100%;width:var(--occupancy);background:#72a9d7;border-radius:100px;transition:width .4s}
+    .live-progress-fill.slight{background:#69ad71}
+    .live-progress-fill.medium{background:#e0a247}
+    .live-progress-fill.full{background:#d85b54}
+    .live-stats{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#486183;margin:0 0 12px}
+    .live-stats b{font-size:13px;color:var(--navy)}
+    .event-date-picker {display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:15px 0 20px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:12px}
+    .event-date-picker input{padding:10px;border:1px solid #cad4df;border-radius:7px}
+    .event-date-picker button{padding:11px 15px;border:0;border-radius:8px;background:var(--navy);color:white;cursor:pointer}
+    .forecast-date-label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#4e5f7c;font-weight:700;min-width:152px}
+    .forecast-date-label input{padding:9px 10px;border:1px solid #cad4df;border-radius:8px;color:var(--ink);background:#fff;max-width:100%}
+    @media(max-width:650px){.panel-header{flex-wrap:wrap}.forecast-date-label{width:100%}}
+    .parking-guide { display:grid;gap:18px; }.parking-guide h3 { margin:6px 0 0;color:var(--ink); }
+    .parking-callout { padding:17px 20px;background:#eef4ff;border:1px solid #d5e4fa;border-radius:10px;font-size:13px;line-height:1.7;color:#40537b; }
+    .parking-guide a { color:#3459a3;text-decoration:underline;text-underline-offset:3px; }
+    .parking-cards { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px; }
+    .parking-info-card { padding:22px; }.parking-info-card h3 { font-size:16px;margin:0 0 14px; }
+    .parking-info-card strong { font-size:24px;color:var(--navy); }.parking-info-card p { color:#7a889a;font-size:13px;line-height:1.75;margin-top:9px; }
+    .parking-footnote { color:#7a889a;font-size:12px;line-height:1.8; }
+    @media(max-width:700px){.parking-cards{grid-template-columns:1fr}}
+    @media(max-width:580px){.predict-fields{grid-template-columns:1fr}}
+    .weather { display:flex;align-items:center;gap:16px;background:#f0f5fa;border-radius:10px;padding:18px; }
+    .weather-icon { font-size:40px; }.weather strong { font-size:30px; }.weather small { color:#8998a7;font-size:12px; }
+    .weather-line { display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:14px 2px;color:#8b98a8;font-size:12px; }.weather-line b { color:var(--ink); }
+    .event { display:flex;gap:15px;padding:17px 0;border-bottom:1px solid var(--line);align-items:center; }
+    .event-time { background:#f3eee4;color:var(--blue);border-radius:7px;padding:12px 9px;font:700 11px 'DM Mono',monospace; }
+    .event strong { font-size:13px; }.event p { font-size:11px;color:#98a2ae;margin:6px 0 0; }
+    .note { background:#f2ede1;color:#798082;padding:15px 18px;border-radius:9px;font-size:12px;line-height:1.8;margin-top:24px; }
+    .sub-view { display:none; }.sub-view h2 { font-size:32px;margin:0 0 15px; }.sub-view>p { color:#78899c;line-height:1.8;margin-bottom:25px; }
+    .placeholder-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:15px; }.placeholder-grid .panel { min-height:170px; }.placeholder-grid h3 { font-size:16px; }.placeholder-grid p { color:#8495a5;font-size:13px;line-height:1.8; }
+    .back { margin-top:20px;background:var(--blue);color:white;border:0;border-radius:7px;padding:13px 20px;font-weight:700; }
+    .mobile-header { display:none; }.mobile-menu { display:none!important; }
+    @media(max-width:1100px) { .layout{grid-template-columns:235px minmax(0,1fr)}.sidebar{padding:28px 17px}.content{padding:30px 25px}.topbar{padding:25px}.metrics{grid-template-columns:repeat(2,1fr)} }
+    @media(max-width:780px) { .layout{display:block}.sidebar{display:none}.mobile-header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:var(--navy);color:white}.mobile-header .logo{font-size:20px}.mobile-header .logo small{font-size:10px;letter-spacing:3px;margin-top:3px}.mobile-header button{border:1px solid #7893b4;background:transparent;color:white;border-radius:6px;padding:9px 13px}.mobile-menu.open{display:grid!important;grid-template-columns:repeat(2,1fr);gap:7px;background:var(--navy);padding:10px 20px 20px}.mobile-menu button{background:#304c7e;color:white;border:0;border-radius:6px;padding:13px;text-align:left}.topbar{padding:17px 20px}.content{padding:27px 18px}.hero{grid-template-columns:1fr}.hero-art{display:none}.dashboard-grid{grid-template-columns:1fr}.heading-row{align-items:start}.date{display:none}.placeholder-grid{grid-template-columns:1fr} }
+    @media(max-width:480px){.metrics{gap:9px}.metric{padding:14px;min-height:132px}.metric-value{font-size:23px}.hero-copy{padding:27px}.hero h2{font-size:27px}.panel{padding:16px}.preview-badge{font-size:10px;padding:8px}.chart{gap:4px}.chart-labels{gap:4px}.chart-labels span{font-size:9px}}
+  
+/* ======================================
+   공연정보 API 연동 화면
+====================================== */
+
+.performance-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.performance-card {
+    background: #fffdfa;
+    border: 1px solid #e3e3db;
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: 0.2s;
+}
+
+.performance-card:hover {
+    transform: translateY(-2px);
+    border-color: #315399;
+}
+
+.performance-icon {
+    background: #eaf0fa;
+    color: #315399;
+    border-radius: 10px;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+}
+
+.performance-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.performance-info h3 {
+    margin: 0 0 12px;
+    font-size: 17px;
+    color: #1d3263;
+}
+
+.performance-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: #71829e;
+}
+
+.performance-description {
+    margin: 14px 0 0;
+    color: #7d889a;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.performance-status {
+    padding: 25px;
+    background: #fffdfa;
+    border-radius: 10px;
+    color: #71829e;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .performance-card {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .performance-icon {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* 2026 리뉴얼: 공공 안내 사이트의 명료한 구조 + 1988 컬러 포인트 */
+:root {
+  --navy:#233d60; --blue:#365a83; --orange:#d99b43;
+  --cream:#f6f7f8; --white:#ffffff; --ink:#18324d;
+  --muted:#65778b; --line:#e0e6ec;
+}
+html{scroll-behavior:smooth}
+body{background:#f6f7f8;color:var(--ink)}
+.layout{grid-template-columns:248px minmax(0,1fr)}
+.sidebar{
+  height:100vh;height:100dvh;overflow:hidden;padding:28px 20px 20px;
+  background:#243c5d;border-right:1px solid rgba(255,255,255,.1);
+}
+.sidebar::-webkit-scrollbar{display:none}
+.sidebar .logo{font-size:25px;letter-spacing:-1.4px}
+.sidebar .logo small{font-size:12px;letter-spacing:3px;margin-top:6px}
+.sidebar .tagline{margin-top:15px;letter-spacing:1.4px}
+.sidebar .rings{margin:24px 0 27px;transform:rotate(-8deg)}
+.sidebar .rings i{width:24px;height:24px;border-width:5px}
+.nav-caption{font-size:10px;margin:0 9px 12px}
+.nav{gap:4px}
+.nav button{padding:13px 12px;font-size:13px;border-radius:5px;gap:10px}
+.nav button.active{border-left:3px solid var(--orange);padding-left:9px;background:#fff}
+.nav-icon{font-size:19px;width:24px}
+.sidebar-bottom{padding-top:12px;font-size:10px;line-height:1.8;letter-spacing:.5px}
+.topbar{padding:21px 39px;background:#fff;border-bottom:1px solid #e1e6eb;min-height:75px}
+.breadcrumb{font:700 13px 'Noto Sans KR',sans-serif;letter-spacing:0;color:#38516f}
+.preview-badge{background:transparent;border:0;color:#728398;padding:0;font-size:11px;font-weight:600}
+.preview-badge:before{display:none}
+.content{padding:38px 42px 70px;max-width:1600px}
+.eyebrow{font-size:11px;color:#ad7730;letter-spacing:1.2px;margin-bottom:13px}
+h1{font-size:clamp(32px,3vw,44px);line-height:1.32;letter-spacing:-1.8px}
+.subtitle{color:#60728a;font-size:14px;line-height:1.8}
+.hero{background:#33577d;border-radius:6px;min-height:300px;grid-template-columns:1.5fr .75fr}
+.hero-copy{padding:37px 40px}
+.hero h2{font-size:clamp(27px,2.6vw,36px);margin:18px 0 10px}
+.hero-label{background:#e3b364;color:#233c60;padding:7px 12px;font-size:11px}
+.hero-art{background:#d9ae66}
+.section-heading{margin:39px 0 16px;padding-bottom:11px;border-bottom:2px solid #314d6d}
+.section-heading h3{font-size:21px}
+.section-heading small{font-size:11px;color:#72849a}
+.metric,.panel,.area-card{border-radius:8px;box-shadow:0 2px 12px rgba(21,48,80,.035)}
+.metric{border-top:3px solid #385b81;padding:21px;min-height:152px}
+.metric-value{font-size:25px}
+.metric-time-anchor{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 11px;border:1px solid #d8b16a;border-radius:5px;background:#fff7e9;color:#263f65;font-size:13px;font-weight:800;letter-spacing:.2px}
+.metric-time-anchor strong{font-size:17px;font-weight:900;color:#9c5b16;font-variant-numeric:tabular-nums}
+#best-hour{margin-top:10px}
+.panel{padding:26px}
+.panel-header h4{font-size:17px}
+.panel-header p{font-size:12px;line-height:1.65;color:#72839a}
+.live-info{background:#f0f5fa;border:1px solid #d5e1ed;border-radius:8px}
+.note{background:#eef2f6;color:#66798b;border-left:3px solid #9badc0;border-radius:3px}
+.predict-submit,.back{border-radius:5px}
+.recommend{background:#edf5f1;border:1px solid #d7e6de;border-radius:6px}
+.personal-predict{background:#f8fafc;border-radius:8px}
+.metric-icon{border-radius:6px}
+@media(max-width:1100px){.layout{grid-template-columns:220px minmax(0,1fr)}.sidebar{padding:22px 13px}.nav button{padding:11px 9px}}
+@media(max-height:720px) and (min-width:781px){
+  .sidebar{padding-top:15px;padding-bottom:10px}
+  .sidebar .logo{font-size:22px}
+  .sidebar .tagline{margin-top:8px;font-size:10px}
+  .sidebar .rings{margin:12px 0 15px}
+  .sidebar .nav-caption{margin-bottom:6px}
+  .sidebar .nav{gap:0}
+  .sidebar .nav button{padding-top:8px;padding-bottom:8px}
+  .sidebar-bottom{padding-top:6px;line-height:1.35}
+}
+@media(max-width:780px){
+  .layout{display:block}.sidebar{display:none}.content{padding:24px 18px}
+  .mobile-header{background:#243c5d}.hero{grid-template-columns:1fr}
+  .topbar{padding:15px 18px;min-height:auto}
+  .preview-badge{font-size:10px}
+}
+
+  </style>
+</head>
+<body>
+  <header class="mobile-header"><div class="logo" aria-label="올팍주차:88 parking"><span class="logo-hangul">올팍주차</span><span class="logo-mark">:88</span><small>parking</small></div><button id="mobile-toggle" aria-expanded="false">☰ 메뉴</button></header>
+  <div id="mobile-menu" class="mobile-menu" aria-label="모바일 메뉴"></div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo" aria-label="올팍주차:88 parking"><span class="logo-hangul">올팍주차</span><span class="logo-mark">:88</span><small>parking</small></div>
+      <div class="tagline">PARKING · SINCE 1988</div>
+      <div class="rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="nav-caption">EXPLORE / 1988 → 2026</div>
+      <nav id="side-nav" class="nav">
+        <button class="active" data-page="home"><span class="nav-icon">▦</span>한눈에 보기</button>
+        <button data-page="forecast"><span class="nav-icon">▥</span>AI 혼잡도 예측</button>
+        <button data-page="areas"><span class="nav-icon">▤</span>주차장별 예측</button>
+        <button data-page="parking"><span class="nav-icon">Ⓟ</span>주차 안내</button>
+        <button data-page="events"><span class="nav-icon">☆</span>공연 일정</button>
+        <button data-page="visit"><span class="nav-icon">↗</span>방문 추천</button>
+      </nav>
+      <div class="sidebar-bottom">올팍주차:88 parking<br>OLYMPIC PARK · SEOUL</div>
+    </aside>
+    <div class="page">
+      <div class="topbar"><span class="breadcrumb">올팍주차 · <span id="breadcrumb">OVERVIEW</span></span><span class="preview-badge">올림픽공원 주차 안내 · 독립 정보 서비스</span></div>
+      <main class="content">
+        <section id="home-view">
+          <div class="heading-row"><div><div class="eyebrow">OLYMPIC PARK · PARKING GUIDE</div><h1>올림픽공원 주차,<br><span>출발 전에 확인하세요.</span></h1><p class="subtitle">주차 현황과 예상 혼잡 시간, 공연 일정까지 한곳에서 확인하세요.</p></div><div class="date" id="today">NOV 06, 2026</div></div>
+          <div class="hero"><div class="hero-copy"><span class="hero-label">PARKING GUIDE · 88</span><h2>주차 걱정은 줄이고,<br>올림픽공원은 더 즐겁게.</h2><p>오늘의 주차 현황과 방문하기 좋은 시간대를<br>편리하게 살펴보세요.</p><div class="hero-live" id="hero-parking-summary" aria-live="polite"><span class="hero-live-label">주차 현황</span><strong>주차 현황 확인 중...</strong></div><div class="hero-actions"><button id="hero-scroll-parking" type="button">현재 주차 현황 보기 ↓</button><button class="hero-secondary" data-go="forecast">시간대별 혼잡 예상 보기 ↗</button></div></div><div class="hero-art" aria-hidden="true"><span class="eighty">88</span><div class="parking-sign">P</div><div class="arch"></div><span class="caption">PARKING · OLYMPIC PARK · SEOUL</span></div></div>
+          <div class="section-heading"><h3>오늘의 주차·방문 정보</h3><small>DAILY PARKING SNAPSHOT</small></div>
+          <div class="metrics">
+            <div class="metric"><div class="metric-label"><span id="parking-status-label">공식 API 주차현황</span><span class="metric-icon">Ⓟ</span></div><div class="metric-value" id="parking-status">조회 중</div><div class="metric-detail" id="parking-status-detail">동2문·남2문·북2문 합산 · 참고 기준 대비 비율</div></div>
+            <div class="metric"><div class="metric-label">현재 시간대 AI 주차 예측률 <span class="metric-icon">◷</span></div><div class="metric-time-anchor">예측 기준 <strong id="best-hour-anchor">--:00</strong></div><div class="metric-value" id="best-hour">예측 중</div><div class="metric-detail" id="best-hour-detail">현재 시각의 정시 기준으로 계산합니다.</div></div>
+            <div class="metric"><div class="metric-label">오늘의 공연 목록 <span class="metric-icon">☆</span></div><div class="metric-value" id="performance-summary">조회 중</div><div class="metric-detail">공식 일정의 날짜 범위 일치 건수 · 회차 확인 필요</div></div>
+            <div class="metric"><div class="metric-label">날씨 예보 <span class="metric-icon">☀</span></div><div class="metric-value" id="weather-summary">불러오는 중</div><div class="metric-detail" id="weather-summary-detail">기상청 예보 조회 중</div></div>
+          </div>
+          <div class="section-heading"><h3>올림픽공원 주차 현황</h3><small>OFFICIAL PUBLISHED DATA / CURRENT STATUS</small></div>
+          <div class="live-info" id="live-parking-home"><b>● 올림픽공원 공식 주차 현황</b><strong>주차대수 확인 중...</strong><small>동2문·남2문·북2문 범위 / 공식 사이트에 게시된 현황</small></div>
+          <div class="section-heading"><h3>시간대별 주차 혼잡 예상</h3><small>방문 시간 미리 살펴보기</small></div>
+          <div class="dashboard-grid">
+            <article class="panel"><div class="panel-header"><div><h4>날짜별 혼잡도 예측</h4><p>공연 일정과 날씨를 반영해 09~20시 주차 혼잡을 예상합니다. AI 예측치는 실제 주차 현황이 아닙니다.</p></div><label class="forecast-date-label">예측 날짜 <input id="forecast-date" type="date" aria-label="AI 혼잡도 예측 날짜" required></label></div><p id="forecast-event-info" class="predict-result" role="status" aria-live="polite">공식 공연 일정 확인 중...</p><div class="chart" id="chart" aria-live="polite"></div><div class="chart-labels" id="chart-labels"></div><div class="legend"><span><b></b>여유 &lt;50%</span><span><b class="slight"></b>다소혼잡 50~69%</span><span><b class="medium"></b>혼잡 70~89%</span><span><b class="full"></b>만차 수준 ≥90%</span></div><div class="recommend"><strong>방문 시간 추천</strong><p id="recommendation">예측 결과를 불러오는 중입니다.</p></div><form id="personal-predict-form" class="personal-predict"><h4>방문 조건으로 직접 예측하기</h4><p>예상 기온과 강수확률을 입력하면 선택 날짜의 공연 일정도 함께 반영됩니다.</p><div class="predict-fields"><label>방문 날짜<input id="predict-date" type="date" required></label><label>방문 시간<select id="predict-hour"><option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option><option value="17">17:00</option><option value="18" selected>18:00</option><option value="19">19:00</option><option value="20">20:00</option></select></label><label>예상 기온 (°C)<input id="predict-temperature" type="number" min="-30" max="45" step="0.1" value="20" required></label><label>예상 강수확률 (%)<input id="predict-rain" type="number" min="0" max="100" step="1" value="20" required></label></div><div id="personal-performance-info" class="personal-performance-info" role="status" aria-live="polite">선택 날짜의 공식 공연 정보를 확인하는 중입니다...</div><button class="predict-submit" type="submit">혼잡도 예측하기</button><div id="personal-predict-result" class="predict-result" role="status" aria-live="polite">날짜와 조건을 선택하고 예측 버튼을 눌러 주세요.</div></form></article>
+            <article class="panel"><div class="panel-header"><div><h4>날씨와 공연</h4><p>주차 혼잡에 영향을 줄 수 있는 정보</p></div></div><div class="weather"><span class="weather-icon">🌤️</span><div><strong>18°</strong><br><small>구름 조금 · 예시</small></div></div><div class="weather-line"><span>강수확률</span><b>20% (예시)</b></div><div class="weather-line"><span>체감기온</span><b>17° (예시)</b></div><div id="today-events" aria-live="polite"><div class="event"><div><strong>오늘 공연 목록 조회 중...</strong><p>올림픽공원 공식 일정을 확인합니다.</p></div></div></div><button class="predict-submit" type="button" data-page="events" style="margin-top:14px">다른 날짜 공연 확인하기</button></article>
+          </div>
+          <div class="note">정보 안내 · 이 웹사이트는 운영기관이 제공하는 공식 홈페이지가 아닌 독립 프로젝트입니다. 주차 대수는 공개 API 조회값이며 실제 갱신 시각과 다를 수 있습니다. AI 혼잡 예상은 시뮬레이션으로 실제 주차 가능 여부를 보장하지 않습니다.</div>
+        </section>
+        <section id="sub-view" class="sub-view"><div class="eyebrow">올팍주차:88 parking / EXPLORE</div><h2 id="sub-title"></h2><p id="sub-description"></p><div id="sub-content"></div><button class="back" data-go="home">← 한눈에 보기로 돌아가기</button></section>
+      </main>
+    </div>
+  </div>
+  <script src="./config.js"></script>
+  <script>
+    const API_BASE=String(window.OLPARK_API_BASE||'http://127.0.0.1:8000').replace(/\/+$/,'');
+    // 화면을 읽는 도중 정보가 자주 초기화되지 않도록 자동 화면 갱신은 30분 간격으로 제한합니다.
+    // 백엔드의 공식 API 수집 간격(1분)은 별개이며 이 값으로 변경되지 않습니다.
+    // 자동 갱신 없음: 새로고침 또는 사용자가 직접 누른 버튼에서만 다시 조회합니다.
+    const hours = ['09','10','11','12','13','14','15','16','17','18','19','20'];
+    let forecastRequestId = 0;
+    let modelWeather = { temperature: 20, rain_probability: 20 };
+
+    async function drawChart() {
+      const requestId = ++forecastRequestId;
+      const chart = document.getElementById('chart');
+      const recommendation = document.getElementById('recommendation');
+      const eventInfo = document.getElementById('forecast-event-info');
+      const selectedDate = document.getElementById('forecast-date').value;
+      chart.textContent = 'AI 예측 결과를 불러오는 중입니다...';
+      window.olparkSimBestHour = null;
+      updateVisitAdvice();
+      recommendation.textContent = '시간대별 시뮬레이션 예측 중입니다.';
+      eventInfo.textContent = `${selectedDate || '선택한 날짜'} 공식 공연 일정 확인 중...`;
+      if (!selectedDate) {
+        eventInfo.textContent = '예측할 날짜를 선택해 주세요.';
+        return;
+      }
+
+      try {
+        const eventsResponse = await fetch(`${API_BASE}/api/events/by-date?date=${encodeURIComponent(selectedDate)}`);
+        if (!eventsResponse.ok) throw new Error(`공연 일정 조회 오류: ${eventsResponse.status}`);
+        const eventData = await eventsResponse.json();
+        if (eventData.status !== 'success' || !Array.isArray(eventData.events)) throw new Error('공연 일정 응답 형식 오류');
+        if (requestId !== forecastRequestId) return;
+        const eventCount = eventData.events.length;
+        const performance = eventCount > 0 ? 1 : 0;
+        const weekday = (new Date(`${selectedDate}T12:00:00`).getDay()+6)%7;
+        const dayNames = ['월','화','수','목','금','토','일'];
+        const scenarioLabel = `${selectedDate} (${dayNames[weekday]}) · 공식 목록 ${eventCount}건 · 공연 ${performance ? '있음':'없음'}으로 가정`;
+        const knownAudience = eventData.events.reduce((sum,e)=>sum+(Number(e.estimated_audience_proxy)||0),0);
+        const knownVenues = eventData.events.filter(e=>Number.isFinite(e.venue_capacity)).length;
+        eventInfo.textContent = `${scenarioLabel}. 공식 수용 규모 확인 ${knownVenues}곳 · 가정 객석 점유율 70% 적용 시 약 ${knownAudience.toLocaleString()}명 규모(실제 관객 수 아님). 공연 시작 시간·장소·규모를 시간대별로 반영합니다.`;
+        const predictions = await Promise.all(hours.map(async hour => {
+          const response = await fetch(`${API_BASE}/api/parking/predict`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              hour: Number(hour),
+              weekday,
+              visit_date: selectedDate,
+              temperature: modelWeather.temperature,
+              rain_probability: modelWeather.rain_probability,
+              performance,
+              events: eventData.events
+            })
+          });
+          if (!response.ok) throw new Error(`예측 API 오류: ${response.status}`);
+          const result = await response.json();
+          if (result.status !== 'success' || result.model_type !== 'simulation' ||
+              ![0, 1, 2, 3].includes(result.prediction_code) ||
+              !Number.isFinite(result.occupancy_rate)) {
+            throw new Error('예측 응답 형식이 예상과 다릅니다.');
+          }
+          return {code:result.prediction_code,rate:result.occupancy_rate,calibration:result.calibration};
+        }));
+        if (requestId !== forecastRequestId) return;
+
+        const labels = ['여유', '다소혼잡', '혼잡', '만차 수준'];
+        const colors = ['', 'slight', 'medium', 'full'];
+        chart.innerHTML = predictions.map(({code,rate}, i) =>
+          `<div class="chart-bar-wrap" title="${hours[i]}시: ${labels[code]} · 추정 ${rate}% · ${predictions[i].calibration?'최근 공식 조회값 반영':'시뮬레이션'}"><div class="chart-bar ${colors[code]}" style="--height:${Math.max(3,rate)}%"></div></div>`
+        ).join('');
+        document.getElementById('chart-labels').innerHTML = hours.map(hour => `<span>${hour}</span>`).join('');
+        const minIndex = predictions.reduce((best,item,i)=>item.rate < predictions[best].rate?i:best,0);
+        window.olparkSimBestHour = `${hours[minIndex]}:00`;
+        updateVisitAdvice();
+        const calibratedCount=predictions.filter(p=>p.calibration).length;
+        recommendation.textContent = `${scenarioLabel} 조건에서 ${hours[minIndex]}시가 추정 지수 ${predictions[minIndex].rate}%(${labels[predictions[minIndex].code]})로 가장 낮습니다. ${calibratedCount ? `오늘 가까운 ${calibratedCount}개 시간대는 최근 공식 전체 조회 비율을 시간 차이에 따라 반영했습니다. ` : ''}실제 시간대별 점유율이나 입차 가능성을 보장하지 않습니다.`;
+      } catch (error) {
+        if (requestId !== forecastRequestId) return;
+        chart.textContent = '예측 정보를 가져오지 못했습니다.';
+        document.getElementById('chart-labels').textContent = '';
+        window.olparkSimBestHour = null;
+        updateVisitAdvice();
+        recommendation.textContent = '공식 공연 일정 또는 AI 예측 API 연결을 확인해 주세요. 조회 실패를 공연 0건으로 처리하지 않습니다.';
+        eventInfo.textContent = '공식 공연 일정 조회 또는 예측에 실패했습니다. 현재 그래프를 표시할 수 없습니다.';
+        console.error('AI 혼잡도 예측 실패:', error);
+      }
+    }
+    document.getElementById('forecast-date').addEventListener('change', drawChart);
+
+    // 직접 입력한 날짜·시간 및 가정 조건으로 시뮬레이션 예측
+    const predictForm = document.getElementById('personal-predict-form');
+    // 날짜 input에 표시할 서울 기준 오늘 날짜
+    const dateParts = new Intl.DateTimeFormat('en-US', {
+      timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'
+    }).formatToParts(new Date());
+    const dateValue = name => dateParts.find(part => part.type === name).value;
+    document.getElementById('predict-date').value = `${dateValue('year')}-${dateValue('month')}-${dateValue('day')}`;
+    document.getElementById('forecast-date').value = document.getElementById('predict-date').value;
+    drawChart();
+    const personalEventCache = new Map();
+    let personalEventRequestId = 0;
+    async function getPersonalDateEvents(date) {
+      const cached = personalEventCache.get(date);
+      if (cached && Date.now() - cached.savedAt < 300000) return cached.events;
+      const response = await fetch(`${API_BASE}/api/events/by-date?date=${encodeURIComponent(date)}`);
+      if (!response.ok) throw new Error(`공연 조회 HTTP ${response.status}`);
+      const data = await response.json();
+      if (data.status !== 'success' || !Array.isArray(data.events)) throw new Error('공연 조회 응답 형식 오류');
+      personalEventCache.set(date,{events:data.events,savedAt:Date.now()});
+      return data.events;
+    }
+    // 대시보드 상단 카드는 날짜 선택 그래프와 독립적으로 '지금'의 값을 표시합니다.
+    let currentSnapshotRequestId = 0;
+    function koreanClockParts() {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',
+        hour:'2-digit',minute:'2-digit',hourCycle:'h23'
+      }).formatToParts(new Date());
+      const value = type => parts.find(part=>part.type===type)?.value;
+      return {
+        date:`${value('year')}-${value('month')}-${value('day')}`,
+        hour:Number(value('hour')), minute:Number(value('minute'))
+      };
+    }
+    async function refreshCurrentHourSnapshot() {
+      const requestId = ++currentSnapshotRequestId;
+      const clock = koreanClockParts();
+      const hourText = String(clock.hour).padStart(2,'0');
+      try {
+        const events = await getPersonalDateEvents(clock.date);
+        const weekday = (new Date(`${clock.date}T12:00:00`).getDay()+6)%7;
+        const response = await fetch(`${API_BASE}/api/parking/predict`, {
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            hour:clock.hour,weekday,visit_date:clock.date,temperature:modelWeather.temperature,
+            rain_probability:modelWeather.rain_probability,events
+          })
+        });
+        if(!response.ok)throw new Error(`예측 HTTP ${response.status}`);
+        const result = await response.json();
+        if(result.status!=='success'||result.model_type!=='simulation'||!Number.isFinite(result.occupancy_rate)) {
+          throw new Error('예측 응답 형식 오류');
+        }
+        if(requestId!==currentSnapshotRequestId)return;
+        window.olparkCurrentSimulation = {rate:Number(result.occupancy_rate),hour:clock.hour,date:clock.date,calibration:result.calibration};
+        updateVisitAdvice();
+        updateCurrentPredictionComparison();
+      } catch(error) {
+        if(requestId!==currentSnapshotRequestId)return;
+        window.olparkCurrentSimulation = null;
+        updateVisitAdvice();
+        updateCurrentPredictionComparison();
+        console.warn('현재 시간 AI 요약 실패:',error);
+      }
+    }
+    refreshCurrentHourSnapshot();
+    // 화면 전체는 새로고침하지 않습니다. 정각에 현재 시간대 AI 카드만 재계산합니다.
+    let hourlySnapshotTimer;
+    function scheduleHourlySnapshot(){
+      clearTimeout(hourlySnapshotTimer);
+      const now=new Date();
+      const msUntilNextHour=(60-now.getMinutes())*60000-now.getSeconds()*1000-now.getMilliseconds()+300;
+      hourlySnapshotTimer=setTimeout(()=>{
+        refreshCurrentHourSnapshot();
+        scheduleHourlySnapshot();
+      },msUntilNextHour);
+    }
+    scheduleHourlySnapshot();
+    // 절전 상태로 정각 타이머가 지연됐을 때 복귀 시 한 번만 갱신합니다.
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState!=='visible')return;
+      const clock=koreanClockParts();
+      const snapshot=window.olparkCurrentSimulation;
+      if(!snapshot || snapshot.hour!==clock.hour || snapshot.date!==clock.date){
+        refreshCurrentHourSnapshot();
+      }
+      scheduleHourlySnapshot();
+    });
+    async function showPersonalDateEvents() {
+      const requestId = ++personalEventRequestId;
+      const date = document.getElementById('predict-date').value;
+      const box = document.getElementById('personal-performance-info');
+      const previousResult = document.getElementById('personal-predict-result');
+      previousResult.classList.remove('is-forecast','level-slight','level-medium','level-full');
+      previousResult.textContent = '방문 날짜와 조건을 확인한 뒤 AI 혼잡도 예측하기를 눌러 주세요.';
+      box.textContent = date ? `${date} 공식 공연 정보 확인 중...` : '방문 날짜를 선택해 주세요.';
+      if (!date) return;
+      try {
+        const events = await getPersonalDateEvents(date);
+        if (requestId !== personalEventRequestId || document.getElementById('predict-date').value !== date) return;
+        box.replaceChildren();
+        const heading = document.createElement('div');heading.className='personal-performance-heading';
+        const label = document.createElement('span');label.textContent=`📅 ${date} 공식 공연 일정`;
+        const count = document.createElement('span');count.className='personal-performance-badge';count.textContent=`${events.length}건 게시`;
+        heading.append(label,count);box.append(heading);
+        if (!events.length) {
+          const empty=document.createElement('small');empty.textContent='현재 공식 목록에 해당 날짜와 일치하는 공연이 없습니다. (공연이 전혀 없다는 확정 정보는 아닙니다.)';box.append(empty);
+        }
+        events.forEach(item=>{
+          const row=document.createElement('div');row.className='personal-performance-item';
+          const title=document.createElement('strong');title.textContent=item.title;
+          const details=document.createElement('small');
+          const start=item.start_time?`시작 ${item.start_time}`:'시작시간 확인 필요';
+          const end=item.end_time?`종료 예상 ${item.end_time}`:'종료시간 확인 필요';
+          const audience=item.venue_capacity!=null?`공식 시설 수용 규모 최대 약 ${Number(item.venue_capacity).toLocaleString()}석 · 가정 관객 약 ${Number(item.estimated_audience_proxy).toLocaleString()}명`:'수용 규모 확인 필요';
+          details.textContent=`${item.place} · ${start} · ${end} · ${audience}`;
+          row.append(title,details);box.append(row);
+        });
+        const note=document.createElement('small');note.textContent='※ 공연 기간 기준의 게시 목록입니다. 종료 시각은 소요시간으로 계산한 예상값이며 실제 회차는 공식 상세 안내를 확인하세요.';note.style.display='block';note.style.marginTop='8px';box.append(note);
+      } catch (error) {
+        if (requestId === personalEventRequestId) box.textContent='공식 공연 목록을 불러오지 못했습니다. 공연 유무를 자동 판단할 수 없어 예측 시 재시도합니다.';
+        console.warn('방문 조건 공연 정보 조회 실패:',error);
+      }
+    }
+    document.getElementById('predict-date').addEventListener('change',showPersonalDateEvents);
+    showPersonalDateEvents();
+    predictForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const resultBox = document.getElementById('personal-predict-result');
+      const date = document.getElementById('predict-date').value;
+      const hour = Number(document.getElementById('predict-hour').value);
+      const temperature = Number(document.getElementById('predict-temperature').value);
+      const rain = Number(document.getElementById('predict-rain').value);
+      resultBox.classList.remove('is-forecast','level-slight','level-medium','level-full');
+      if (!date || !Number.isFinite(temperature) || !Number.isInteger(rain) ||
+          temperature < -30 || temperature > 45 || rain < 0 || rain > 100) {
+        resultBox.textContent = '날짜·기온·강수확률을 올바르게 입력해 주세요.';
+        return;
+      }
+      // JS: 일요일=0 / Python: 월요일=0
+      const weekday = (new Date(`${date}T12:00:00`).getDay() + 6) % 7;
+      resultBox.textContent = 'AI 시뮬레이션 계산 중...';
+      try {
+        const officialEvents = await getPersonalDateEvents(date);
+        if (document.getElementById('predict-date').value !== date) throw new Error('조회 중 방문 날짜가 변경되었습니다. 다시 예측해 주세요.');
+        const performance = officialEvents.length > 0 ? 1 : 0;
+        const response = await fetch(`${API_BASE}/api/parking/predict`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({hour,weekday,visit_date:date,temperature,rain_probability:rain,performance,events:officialEvents})
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (data.status !== 'success' || data.model_type !== 'simulation' ||
+            ![0,1,2,3].includes(data.prediction_code) || !Number.isFinite(data.occupancy_rate)) {
+          throw new Error('알 수 없는 API 응답');
+        }
+        resultBox.classList.add('is-forecast');
+        const tone = ['','level-slight','level-medium','level-full'][data.prediction_code];
+        if (tone) resultBox.classList.add(tone);
+        resultBox.replaceChildren();
+        const title = document.createElement('div');
+        title.className = 'personal-result-title';
+        title.textContent = `AI 혼잡도 예측 결과 · ${date} ${String(hour).padStart(2,'0')}:00`;
+        const main = document.createElement('div');
+        main.className = 'personal-result-main';
+        const badge = document.createElement('span');
+        badge.className = 'personal-result-badge';
+        badge.textContent = data.prediction;
+        const rate = document.createElement('strong');
+        rate.className = 'personal-result-rate';
+        rate.textContent = `${data.occupancy_rate}%`;
+        const rateLabel = document.createElement('small');
+        rateLabel.textContent = '가상 점유율';
+        rate.append(rateLabel);
+        main.append(badge, rate);
+        const note = document.createElement('small');
+        note.className = 'personal-result-note';
+        note.textContent = `※ 공식 공연 목록 ${officialEvents.length}건을 조회해 공연 ${performance ? '있음':'없음'} 조건을 자동 반영했습니다. AI는 공연 건수가 아닌 유무만 사용합니다. (실제 주차 현황이 아닌 시뮬레이션입니다.)`;
+        resultBox.append(title, main, note);
+      } catch (error) {
+        console.error('맞춤 예측 실패:', error);
+        resultBox.textContent = '예측 실패: FastAPI 서버와 예측 API 연결을 확인해 주세요.';
+      }
+    });
+
+const pages = {
+  home:['OVERVIEW','',''],
+  forecast:['AI FORECAST','AI 주차 혼잡도 예측','시뮬레이션 데이터로 학습한 모델을 통해 시간대별 혼잡 등급과 직접 입력한 방문 조건을 확인할 수 있습니다. 실제 주차 현황은 아닙니다.'],
+  areas:['PARKING ZONES','주차장별 혼잡도 예측','공식 주차장 규모·인근 공연장 일정으로 구역별 가상 혼잡도를 비교합니다. 실제 구역별 잔여 대수는 제공하지 않습니다.'],
+  parking:['PARKING GUIDE','주차 안내','공식 사이트에 공개된 주차대수와 주차요금·출입시간·시설 정보를 확인합니다.'],
+  events:['EVENT CALENDAR','공연 일정','날짜를 선택해 공식 공연 일정 목록의 일치 항목을 확인하세요.'],
+  visit:['SMART VISIT','방문 추천','선택한 날짜의 공식 공연 일정과 입력한 예상 날씨를 반영해 09~20시의 가상 주차 혼잡도를 비교합니다.']
+};
+const cards = {
+  forecast:[['01 · 날짜와 시간','방문 희망 날짜·시간을 선택합니다.'],['02 · 예측 변수','공연 유무, 날씨, 요일, 과거 입출차량을 반영합니다.'],['03 · 예측 결과','시간대별 입차량과 혼잡 지수를 표시할 예정입니다.']],
+  parking:[['주차구역 정보','구역 위치와 주차 가능 대수를 확인합니다.'],['주차 수요 예측','과거 차량 데이터를 바탕으로 혼잡을 예측합니다.'],['주차 분산 안내','상대적으로 여유로운 구역을 추천합니다.']],
+  events:[['공식 공연 일정','한국체육산업개발 공연정보를 불러올 예정입니다.'],['공연 장소','공연장별 일정을 정리합니다.'],['주차 영향 분석','공연 시작·종료 전후 차량 수요를 분석합니다.']],
+  visit:[['방문 시간 선택','방문 예정 시간을 선택합니다.'],['혼잡 비교','이전·이후 시간대와 비교합니다.'],['방문 대안','보다 여유로운 방문 시간을 추천합니다.']]
+};
+// 대시보드의 실제 예측 패널 하나를 메뉴 화면으로 이동해 재사용합니다.
+// 복제하지 않으므로 같은 ID나 클릭 이벤트가 중복되지 않습니다.
+const forecastPanel = document.getElementById('chart').closest('.panel');
+const forecastHomeParent = forecastPanel.parentElement;
+const forecastHomeNext = forecastPanel.nextElementSibling;
+
+function navigate(page) {
+  const data = pages[page] || pages.home;
+  // 다른 메뉴의 innerHTML을 바꾸기 전에 예측 패널을 원래 위치로 복귀
+  if (forecastPanel.parentElement !== forecastHomeParent) {
+    forecastHomeParent.insertBefore(forecastPanel, forecastHomeNext);
+  }
+  document.getElementById('home-view').style.display = page==='home' ? 'block':'none';
+  document.getElementById('sub-view').style.display = page==='home' ? 'none':'block';
+  document.getElementById('breadcrumb').textContent = data[0];
+  document.querySelectorAll('#side-nav [data-page]').forEach(button=>button.classList.toggle('active',button.dataset.page===page));
+  if(page!=='home') {
+    document.getElementById('sub-title').textContent = data[1];
+    document.getElementById('sub-description').textContent = data[2];
+    if (page === 'forecast') {
+      document.getElementById('sub-content').replaceChildren(forecastPanel);
+    } else if (page === 'areas') {
+      document.getElementById('sub-content').innerHTML = `
+      <section class="panel personal-predict">
+        <h4>Ⓟ 내 목적지 주변 주차장 비교</h4>
+        <p>공식 공연장 위치·수용 규모·시간을 바탕으로 한 구역별 시뮬레이션입니다. <strong>실시간 잔여 대수가 아닙니다.</strong></p>
+        <form id="area-form">
+          <div class="predict-fields">
+            <label>방문 날짜<input type="date" id="area-date" required></label>
+            <label>방문 시간<select id="area-hour">${hours.map(h=>`<option value="${Number(h)}" ${h==='18'?'selected':''}>${h}:00</option>`).join('')}</select></label>
+            <label>방문 목적지<select id="area-destination">
+              <option value="dome">KSPO DOME</option><option value="arena">티켓링크 라이브 아레나</option>
+              <option value="olympic_hall">올림픽홀</option><option value="art_hall">우리금융아트홀</option>
+              <option value="muse">뮤즈라이브</option><option value="k_art">K-아트홀</option>
+              <option value="pool">올림픽수영장</option><option value="tennis">테니스경기장</option>
+            </select></label>
+            <label>예상 기온(°C)<input type="number" id="area-temp" value="20" min="-30" max="45" step="0.1" required></label>
+            <label>예상 강수확률(%)<input type="number" id="area-rain" value="20" min="0" max="100" step="1" required></label>
+          </div>
+          <button class="predict-submit" type="submit">주차장별 혼잡도 비교하기</button>
+        </form>
+        <div class="predict-result" id="area-summary" role="status" aria-live="polite">조건을 선택해 비교해 주세요.</div>
+        <div class="area-grid" id="area-results"></div>
+        <p class="parking-footnote">※ 주차장별 숫자는 공식 시설 규모이며 현재 남은 주차 공간이 아닙니다. 점수와 추천은 인접도·공연 관객 규모를 가정한 모델 결과로 검증된 주차 가능성을 의미하지 않습니다. <a href="https://www.ksponco.or.kr/olympicpark/parkingInfo?mid=a20111000000" target="_blank" rel="noopener noreferrer">공식 주차장 안내 ↗</a></p>
+      </section>`;
+      document.getElementById('area-date').value=document.getElementById('predict-date').value;
+      document.getElementById('area-form').addEventListener('submit',calculateAreaPredictions);
+    } else if (page === 'parking') {
+      document.getElementById('sub-content').innerHTML = `
+        <div class="parking-guide">
+          <div class="live-info" id="live-parking-details"><b>● 공식 공개 주차 현황</b><strong>조회 중...</strong><small>동2문·남2문·북2문 합산 / 현장 입출차와 지연 가능</small></div>
+          <div class="parking-callout">ⓘ <strong>정적인 공식 시설 안내</strong>입니다. 아래의 주차 가능 대수는 주차장 규모로, 지금 남아 있는 자리 수가 아닙니다. <a href="https://www.ksponco.or.kr/olympicpark/parkingInfo?mid=a20111000000" target="_blank" rel="noopener noreferrer">공식 주차 안내 ↗</a></div>
+          <div class="parking-cards">
+            <article class="panel parking-info-card"><h3>🚙 소형차 주차요금</h3><strong>10분당 600원</strong><p>최초 10분 이내 출차 무료 · 당일 최대 20,000원</p></article>
+            <article class="panel parking-info-card"><h3>🚌 대형차 주차요금</h3><strong>10분당 1,200원</strong><p>최초 10분 이내 출차 무료 · 당일 최대 24,000원</p></article>
+            <article class="panel parking-info-card"><h3>🕒 공원 차량 출입</h3><strong>06:00~22:00</strong><p>출차 가능 시간은 출입문별로 다릅니다. 동2문은 24시간 출차 안내.</p></article>
+            <article class="panel parking-info-card"><h3>💳 주차 정산</h3><strong>후불제</strong><p>사전무인정산기 24시간 운영 · 사전정산 후 30분 내 출차</p></article>
+          </div>
+          <h3>주요 시설과 가까운 주차장</h3>
+          <div class="parking-cards">
+            <article class="panel parking-info-card"><h3>올림픽 수영장</h3><strong>P4 · 117대</strong><p>시설 안내 기준 약 1분 거리</p></article>
+            <article class="panel parking-info-card"><h3>KSPO DOME</h3><strong>P5 · 176대</strong><p>올림픽체조경기장 · 약 1분 거리</p></article>
+            <article class="panel parking-info-card"><h3>티켓링크 라이브 아레나</h3><strong>P6 · 167대</strong><p>핸드볼경기장 · 약 1~2분 거리</p></article>
+            <article class="panel parking-info-card"><h3>우리금융아트홀</h3><strong>P7 · 137대</strong><p>올림픽역도경기장 · 약 1~2분 거리</p></article>
+          </div>
+          <p class="parking-footnote">※ 주차장 규모와 도보 소요 시간은 공식 시설 안내의 게시값이며, 최신 운영 상황은 현장에서 달라질 수 있습니다. 공연 티켓 소지자에게 별도 주차요금 할인은 없으며, 할인 대상 및 예외사항은 공식 안내를 확인해 주세요.</p>
+          <p class="parking-footnote">출처: <a href="https://www.ksponco.or.kr/olympicpark/parkingInfo?mid=a20111000000" target="_blank" rel="noopener noreferrer">올림픽공원 공식 주차 안내</a> · <a href="https://www.ksponco.or.kr/olympicpark/board.es?act=view&bid=0045&list_no=84077&mid=a20601000000&nPage=1" target="_blank" rel="noopener noreferrer">2026-06-12 주차요금 안내</a> · <a href="https://www.ksponco.or.kr/olympicpark/menu.es?mid=a20101000000" target="_blank" rel="noopener noreferrer">공원 차량 출입시간</a></p>
+        </div>`;
+      loadLiveParking();
+    } else if (page === 'visit') {
+      document.getElementById('sub-content').innerHTML = `
+        <section class="panel personal-predict">
+          <h4>✦ 방문하기 좋은 시간 비교</h4>
+          <p>가상 주차 데이터 기반 시뮬레이션입니다. 공연 일정은 공식 게시 목록을 자동 확인하고, 미래 날씨는 직접 입력합니다.</p>
+          <form id="visit-form">
+            <div class="predict-fields">
+              <label>방문 날짜<input id="visit-date" type="date" required></label>
+              <label>예상 기온 (°C)<input id="visit-temp" type="number" value="20" min="-30" max="45" step="0.1" required></label>
+              <label>예상 강수확률 (%)<input id="visit-rain" type="number" value="20" min="0" max="100" step="1" required></label>
+            </div>
+            <div class="personal-performance-info" id="visit-performance-info" role="status" aria-live="polite">선택 날짜의 공식 공연 일정을 확인하는 중입니다...</div>
+            <button class="predict-submit" type="submit">09~20시 방문 시간 비교하기</button>
+          </form>
+          <div class="predict-result" id="visit-summary" role="status" aria-live="polite">조건을 입력하고 비교 버튼을 눌러 주세요.</div>
+          <div class="visit-results" id="visit-slots"></div>
+        </section>`;
+      document.getElementById('visit-date').value = document.getElementById('predict-date').value;
+      document.getElementById('visit-date').addEventListener('change',showVisitDateEvents);
+      showVisitDateEvents();
+      document.getElementById('visit-form').addEventListener('submit', recommendVisitHours);
+    } else {
+      document.getElementById('sub-content').innerHTML = `<div class="placeholder-grid">${cards[page].map(c=>`<article class="panel"><h3>${c[0]}</h3><p>${c[1]}</p></article>`).join('')}</div>`;
+    }
+    if (page === "events") renderDateEvents();
+  }
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-toggle').setAttribute('aria-expanded','false');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// 방문 추천: 날짜별 공연 목록/시간을 표시하고 공연 전후 2시간을 가상 영향 시간대로 설정합니다.
+let visitEventRequestId = 0;
+async function showVisitDateEvents() {
+  const requestId = ++visitEventRequestId;
+  const date = document.getElementById('visit-date')?.value;
+  const container = document.getElementById('visit-performance-info');
+  const summary = document.getElementById('visit-summary');
+  if (!container || !date) return;
+  if (summary) summary.textContent = '날짜와 날씨 조건을 확인한 후 비교 버튼을 눌러 주세요.';
+  container.textContent = `${date} 공식 공연 일정 조회 중...`;
+  try {
+    const events = await getPersonalDateEvents(date);
+    if (requestId !== visitEventRequestId || !container.isConnected || document.getElementById('visit-date')?.value !== date) return;
+    container.replaceChildren();
+    const heading = document.createElement('div');heading.className='personal-performance-heading';
+    const label = document.createElement('span');label.textContent=`📅 ${date} 공식 공연 일정`;
+    const badge = document.createElement('span');badge.className='personal-performance-badge';badge.textContent=`${events.length}건 게시`;
+    heading.append(label,badge);container.append(heading);
+    if (!events.length) {
+      const empty = document.createElement('small');empty.textContent='현재 공식 목록에 일치하는 공연이 없습니다. (실제 공연이 전혀 없다는 확정 정보는 아닙니다.)';container.append(empty);
+    }
+    events.forEach(item=>{
+      const row=document.createElement('div');row.className='personal-performance-item';
+      const name=document.createElement('strong');name.textContent=item.title;
+      const detail=document.createElement('small');
+      const capacity=item.venue_capacity!=null?`최대 약 ${Number(item.venue_capacity).toLocaleString()}석 · 가정 관객 약 ${Number(item.estimated_audience_proxy).toLocaleString()}명`:'수용 규모 확인 필요';
+      detail.textContent=`${item.place} · ${item.start_time?`시작 ${item.start_time}`:'시작시간 확인 필요'} · ${item.end_time?`종료 예상 ${item.end_time}`:'종료시간 확인 필요'} · ${capacity}`;
+      row.append(name,detail);container.append(row);
+    });
+    const notice=document.createElement('small');notice.style.cssText='display:block;margin-top:10px';
+    notice.textContent='※ 시설 최대 수용 규모와 가정 객석 점유율 70%를 반영합니다. 회차 시간이 없는 공연은 약한 불확실 영향을 적용합니다. 실제 관객 수·주차 수요를 검증한 값은 아닙니다.';
+    container.append(notice);
+  } catch (error) {
+    if (requestId === visitEventRequestId && container.isConnected) container.textContent='공식 공연 조회에 실패했습니다. 공연이 0건이라고 간주하지 않고, 비교 버튼에서 다시 조회합니다.';
+    console.warn('방문 추천 공연 일정 조회 실패:',error);
+  }
+}
+
+function performanceNearHour(events, hour) {
+  if (!events.length) return 0;
+  if (events.some(item=>!item.start_time)) return 1;
+  return events.some(item=>{
+    const start=Number(item.start_time.slice(0,2))+Number(item.start_time.slice(3,5))/60;
+    const end=item.end_time ? Number(item.end_time.slice(0,2))+Number(item.end_time.slice(3,5))/60 : start+2;
+    return hour >= start-2 && hour <= end+2;
+  }) ? 1 : 0;
+}
+
+// 방문 추천 메뉴: 12개 시간대의 시뮬레이션 API 결과를 비교합니다.
+async function recommendVisitHours(event) {
+  event.preventDefault();
+  const summary = document.getElementById('visit-summary');
+  const slots = document.getElementById('visit-slots');
+  const date = document.getElementById('visit-date').value;
+  const temperature = Number(document.getElementById('visit-temp').value);
+  const rain = Number(document.getElementById('visit-rain').value);
+  if (!date || !Number.isFinite(temperature) || !Number.isInteger(rain) ||
+      temperature < -30 || temperature > 45 || rain < 0 || rain > 100) {
+    summary.textContent = '입력값을 확인해 주세요.';
+    return;
+  }
+  const weekday = (new Date(`${date}T12:00:00`).getDay() + 6) % 7;
+  const form = document.getElementById('visit-form');
+  const button = form.querySelector('button');
+  button.disabled = true;
+  summary.textContent = '시간대별 예측 결과를 비교하는 중입니다...';
+  slots.replaceChildren();
+  try {
+    const officialEvents = await getPersonalDateEvents(date);
+    if (!summary.isConnected || document.getElementById('visit-date')?.value !== date) return;
+    const results = await Promise.all(hours.map(async time => {
+      const performance=performanceNearHour(officialEvents,Number(time));
+      const response = await fetch(`${API_BASE}/api/parking/predict`, {
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({hour:Number(time),weekday,visit_date:date,temperature,rain_probability:rain,performance,events:officialEvents})
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (data.status !== 'success' || data.model_type !== 'simulation' ||
+          ![0,1,2,3].includes(data.prediction_code) || !Number.isFinite(data.occupancy_rate)) throw new Error('예측 응답 오류');
+      return {code:data.prediction_code,rate:data.occupancy_rate};
+    }));
+    if (!summary.isConnected || document.getElementById('visit-date')?.value !== date) return; // 다른 메뉴/날짜 변경 시 폐기
+    const names = ['여유','다소혼잡','혼잡','만차 수준'];
+    const classes = ['low','slight','medium','full'];
+    const lowest = Math.min(...results.map(item=>item.rate));
+    const suggested = hours.filter((hour,i) => results[i].rate === lowest);
+    summary.textContent = `${date} · 공식 공연 ${officialEvents.length}건 게시 · 가장 낮은 가상 점유율 ${lowest}% (${suggested.join(', ')}시). 공연 건수·장소·시작 시각을 가상 영향으로 반영한 시뮬레이션이며 실제 주차 가능 여부를 보장하지 않습니다.`;
+    hours.forEach((hour,i) => {
+      const item = document.createElement('div');
+      item.className = `visit-slot ${classes[results[i].code]}`;
+      const timeNode = document.createElement('strong');
+      const levelNode = document.createElement('span');
+      timeNode.textContent = `${hour}:00`;
+      levelNode.textContent = `${names[results[i].code]} ${results[i].rate}% · 공식 공연 ${officialEvents.length}건 반영`;
+      item.append(timeNode,levelNode);
+      slots.appendChild(item);
+    });
+  } catch (error) {
+    if (summary.isConnected) summary.textContent = '방문 추천 요청에 실패했습니다. 공식 공연 일정 및 FastAPI 서버 연결을 확인해 주세요. 공연 0건으로 임의 처리하지 않았습니다.';
+    console.error('방문 추천 오류:',error);
+  } finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+// 주차장별 혼잡도는 운영기관의 구역별 실시간 값이 아닌 별도 시뮬레이션입니다.
+let areaPredictRequestId = 0;
+async function calculateAreaPredictions(ev) {
+  ev.preventDefault();
+  const requestId = ++areaPredictRequestId;
+  const form = document.getElementById('area-form');
+  const summary = document.getElementById('area-summary');
+  const grid = document.getElementById('area-results');
+  const button = form?.querySelector('button[type="submit"]');
+  const date = document.getElementById('area-date')?.value;
+  const hour = Number(document.getElementById('area-hour')?.value);
+  const destination = document.getElementById('area-destination')?.value;
+  const temperature = Number(document.getElementById('area-temp')?.value);
+  const rain_probability = Number(document.getElementById('area-rain')?.value);
+  if(!date || !Number.isInteger(hour) || !Number.isFinite(temperature) || temperature < -30 ||
+     temperature > 45 || !Number.isInteger(rain_probability) || rain_probability<0 || rain_probability>100) {
+    summary.textContent='날짜·시간·날씨 조건을 확인해 주세요.';
+    return;
+  }
+  button.disabled=true;
+  summary.textContent='공식 공연 일정을 조회하고 주차장별 영향을 계산하고 있습니다...';
+  grid.replaceChildren();
+  try {
+    const events = await getPersonalDateEvents(date);
+    if(requestId!==areaPredictRequestId || !summary.isConnected || document.getElementById('area-date')?.value!==date)return;
+    const weekday=(new Date(`${date}T12:00:00`).getDay()+6)%7;
+    const response=await fetch(`${API_BASE}/api/parking/areas/predict`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({visit_date:date,hour,weekday,temperature,rain_probability,destination,events})
+    });
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    if(data.status!=='success'||data.model_type!=='simulation'||!Array.isArray(data.area_results))throw new Error('예측 결과 형식 오류');
+    if(requestId!==areaPredictRequestId || !summary.isConnected || document.getElementById('area-date')?.value!==date)return;
+    const unmatched=data.unmatched_events?.length?` · 주차 영향 산정 제외 ${data.unmatched_events.length}건(공연장 매칭 불가)`:'';
+    const globalInfo=data.global_reference?` · 최근 전체 합산 공식 API 조회 비율 ${data.global_reference.ratio}%를 시간차 ${data.global_reference.horizon_hours}시간에 따라 보정 반영`:' · 해당 시각에 적용 가능한 최근 공식 조회값이 없어 시뮬레이션만 사용';
+    summary.textContent=`${date} ${String(hour).padStart(2,'0')}:00 · 공식 공연 ${events.length}건${globalInfo} · 목적지 접근성과 추정 혼잡 지수를 함께 고려한 추천 구역 ${(data.recommended||[]).join(', ')}${unmatched}. 추천 후보는 빈자리 보장이 아니며, 구역별 실제 점유율이나 잔여 대수는 제공되지 않습니다.`;
+    data.area_results.forEach(area=>{
+      const isRecommended=Boolean(data.recommended?.includes(area.id));
+      const card=document.createElement('article');card.className='area-card'+(isRecommended?' recommended':'');
+      const top=document.createElement('div');top.className='area-card-top';
+      const title=document.createElement('h4');title.textContent=area.name;
+      top.append(title);
+      if(isRecommended){
+        const badge=document.createElement('span');badge.className='area-recommend-badge';
+        badge.textContent='★ 추천 후보';badge.setAttribute('aria-label','목적지 접근성과 추정 혼잡도를 고려한 추천 후보');
+        top.append(badge);
+      }
+      const capacity=document.createElement('p');capacity.textContent=`공식 주차 규모 ${Number(area.capacity).toLocaleString()}대 · 가까운 시설: ${area.near}`;
+      const score=document.createElement('div');score.className='area-level';score.textContent=`${area.level} · 구역별 예상 혼잡 지수 ${area.score}/100`;
+      const bar=document.createElement('div');bar.className='area-scorebar';
+      const fill=document.createElement('span');fill.style.width=`${Math.max(0,Math.min(100,area.score))}%`;
+      fill.style.background=area.score>=90?'#bd4b46':area.score>=70?'#d99d46':area.score>=50?'#79a46e':'#b7c9df';
+      bar.append(fill);
+      const note=document.createElement('p');
+      const breakdown=area.breakdown||{};
+      const modifiers=`시설 기본 수요 ${Number(breakdown.activity_assumption||0)>=0?'+':''}${breakdown.activity_assumption??0} · 규모 보정 ${Number(breakdown.capacity_assumption||0)>=0?'+':''}${breakdown.capacity_assumption??0} · 공연 영향 ${Number(breakdown.event_effect_assumption||0)>=0?'+':''}${breakdown.event_effect_assumption??0}`;
+      note.textContent=(area.influencing_events?.length?`관련 공연: ${area.influencing_events.join(', ')} · `:'공연 직접 영향 낮음 · ')+modifiers+' (추정 기준)';
+      card.append(top,capacity,score,bar);
+      if(isRecommended){
+        const hint=document.createElement('p');hint.className='area-recommend-hint';
+        hint.textContent='목적지 접근성 · 예상 혼잡도를 함께 고려한 추천 (빈자리 보장 아님)';
+        card.append(hint);
+      }
+      card.append(note);grid.append(card);
+    });
+  } catch(error) {
+    if(requestId===areaPredictRequestId && summary.isConnected)summary.textContent='조회에 실패했습니다. 공식 공연 일정 및 FastAPI 서버 연결을 확인해 주세요. 공연 0건으로 임의 처리하지 않았습니다.';
+    console.warn('구역별 예측 실패:',error);
+  } finally {
+    if(button.isConnected)button.disabled=false;
+  }
+}
+document.querySelectorAll('[data-page],[data-go]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.page||button.dataset.go)));
+// 데스크톱 상단에 중복 메뉴가 나타나지 않도록 모바일 메뉴는 작은 화면에서만 열립니다.
+document.getElementById('mobile-menu').innerHTML = document.getElementById('side-nav').innerHTML;
+document.querySelectorAll('#mobile-menu [data-page]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.page)));
+document.getElementById('mobile-toggle').addEventListener('click',()=>{
+  const menu = document.getElementById('mobile-menu');
+  const opened = menu.classList.toggle('open');
+  document.getElementById('mobile-toggle').setAttribute('aria-expanded',String(opened));
+});
+document.getElementById('today').textContent = new Intl.DateTimeFormat('en-US',{
+  timeZone:'Asia/Seoul',month:'short',day:'2-digit',year:'numeric'
+}).format(new Date()).toUpperCase();
+
+// 공식 사이트에 공개된 동2문·남2문·북2문 합산 주차 현황입니다.
+async function loadHybridEvaluation(){
+  const status=document.getElementById('validation-status');
+  const cards=document.getElementById('validation-cards');
+  const note=document.getElementById('validation-note');
+  const hourlyNote=document.getElementById('validation-hourly-note');
+  if(!status||!cards||!note)return;
+  try{
+    const response=await fetch(`${API_BASE}/api/parking/hybrid-evaluation?hours=168`);
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const result=await response.json();
+    cards.replaceChildren();
+    const total=(result.by_horizon||[]).reduce((sum,item)=>sum+item.matched_count,0);
+    status.textContent=total?`현재까지 공식 API 기록과 비교한 전망 ${total}건 · 아래 수치는 API 조회 기록 기준 평균 절대차(MAE)입니다.`:'아직 비교 완료된 전망이 없습니다. 30분 뒤부터 관측 시각이 맞는 기록을 비교할 수 있습니다.';
+    for(const item of result.by_horizon||[]){
+      const card=document.createElement('div');card.style.cssText='border:1px solid #e1e4ea;border-radius:12px;padding:15px;background:#fff';
+      const title=document.createElement('small');title.style.cssText='color:#67758b;font-size:13px';
+      title.textContent=`${item.minutes_ahead===30?'30분':item.minutes_ahead===60?'1시간':'2시간'} 후 전망`;
+      const metric=document.createElement('strong');metric.style.cssText='display:block;margin:8px 0;font-size:24px;color:#293860';
+      metric.textContent=item.matched_count?`${item.mae_percentage_points.toFixed(1)}%p`:'집계 대기';
+      const benchmark=document.createElement('small');benchmark.style.cssText='display:block;line-height:1.7;color:#536782';
+      benchmark.textContent=item.matched_count?`현재 차량 수 유지 기준: ${item.unchanged_current_baseline_mae_pp.toFixed(1)}%p`:'단순 기준 모델 비교 대기';
+      const description=document.createElement('small');description.style.cssText='display:block;line-height:1.7;color:#728198';
+      description.textContent=`비교 ${item.matched_count}건 · 대기 ${item.pending_count}건 · 해당 시각 관측 없음 ${item.unmatched_count}건`;
+      const guidance=document.createElement('small');guidance.style.cssText='display:block;margin-top:6px;color:#8f5a21';
+      if(item.matched_count){
+        const difference=Math.abs(item.hybrid_improvement_pp).toFixed(1);
+        guidance.textContent=`단순 기준 대비 ${difference}%p ${item.hybrid_improvement_pp>0?'오차 감소':item.hybrid_improvement_pp<0?'오차 증가':'차이 없음'} · ${item.enough_for_initial_review?'초기 검토 가능':'표본 적음'}`;
+        guidance.style.color=item.hybrid_improvement_pp>0?'#457c56':'#a56732';
+      }else{
+        guidance.textContent='비교 기록 확보 후 평가 가능';
+      }
+      card.append(title,metric,benchmark,description,guidance);cards.append(card);
+    }
+    if(hourlyNote){
+      const worst=result.highest_error_hours||[];
+      hourlyNote.textContent=worst.length?
+        `오차가 큰 시간대(각 3건 이상 비교): ${worst.map(item=>`${String(item.hour_kst).padStart(2,'0')}시 ${item.hybrid_mae_pp.toFixed(1)}%p (${item.matches}건)`).join(' · ')}`:
+        '시간대별 오차는 해당 시간의 비교 기록이 3건 이상 쌓이면 표시됩니다.';
+    }
+    note.textContent='※ 기준 모델은 현재 차량 수가 그대로 유지된다고 가정합니다. 목표 시각 뒤 5분 이내의 첫 공식 API 조회값과 비교하며 실제 센서 측정 시각은 알 수 없습니다. 가까운 시각의 예측들은 독립된 표본이 아니므로 작은 차이로 성능이 우수하다고 단정할 수 없습니다.';
+  }catch(error){
+    cards.replaceChildren();status.textContent='자동 검증 기록을 조회할 수 없습니다.';
+    note.textContent='main.py 서버 버전과 실행 상태를 확인해 주세요.';
+    console.warn('전망 검증 조회 오류:',error);
+  }
+}
+loadHybridEvaluation();
+async function loadHybridPreview(){
+  const status=document.getElementById('hybrid-status');
+  const results=document.getElementById('hybrid-results');
+  const note=document.getElementById('hybrid-note');
+  if(!status||!results||!note)return;
+  try{
+    const response=await fetch(`${API_BASE}/api/parking/hybrid-preview`);
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    results.replaceChildren();
+    if(data.status!=='experimental_preview'){
+      status.textContent=`⏳ 단기 전망 준비 중 · 최근 관측 ${data.observation_count??0}건`;
+      note.textContent=`${data.reason||'충분한 관측값이 필요합니다.'} 기존 AI 시뮬레이션 수치를 공식 관측값인 것처럼 보정하지 않습니다.`;
+      return;
+    }
+    const direction=data.trend_vehicles_per_hour>=0?'증가':'감소';
+    status.textContent=`최근 주차 차량 수 ${direction} 추세 · 시간당 약 ${Math.abs(data.trend_vehicles_per_hour)}대 순변화 (단순 추정) · 공연·날씨 가상 변화 ${data.scenario_context_used?'일부 반영':'자료 미확인으로 제외'}`;
+    for(const item of data.horizons){
+      const card=document.createElement('div');
+      card.style.cssText='padding:16px;border:1px solid #e1e4ea;border-radius:13px;background:#fff';
+      const label=document.createElement('small');label.style.cssText='display:block;color:#6f7f99;font-size:13px';
+      label.textContent=`${item.minutes_ahead===30?'30분':item.minutes_ahead===60?'1시간':'2시간'} 후 · 실험 전망`;
+      const percentage=document.createElement('strong');
+      percentage.style.cssText=`display:block;margin:8px 0;font-size:26px;color:${item.reference_occupancy_percent>=90?'#a44238':item.reference_occupancy_percent>=70?'#aa7532':'#293860'}`;
+      percentage.textContent=`${item.reference_occupancy_percent.toFixed(1)}%`;
+      const detail=document.createElement('small');detail.style.cssText='color:#7c879c;line-height:1.6';
+      detail.textContent=`${item.level} · 약 ${Number(item.projected_occupied).toLocaleString()}대 (가상 추정)`;
+      card.append(label,percentage,detail);results.append(card);
+    }
+    note.textContent='※ 최근 API 관측값의 순증감 추세를 단순 연장하고, 정보가 확인되면 공연·시간 시뮬레이션 변화 일부를 더한 실험값입니다. 임의 계수이며 실제 미래 주차량에 대한 검증된 AI 예측이 아닙니다.';
+  }catch(error){
+    results.replaceChildren();
+    status.textContent='단기 전망 정보를 조회하지 못했습니다.';
+    note.textContent='백엔드 main.py를 새 버전으로 바꾸고 서버를 다시 실행해 주세요.';
+    console.warn('단기 전망 조회 오류:',error);
+  }
+}
+loadHybridPreview();
+async function loadParkingObservationAnalysis(){
+  const summary=document.getElementById('parking-quality-summary');
+  const graph=document.getElementById('parking-hourly-averages');
+  const note=document.getElementById('parking-quality-note');
+  const coverage=document.getElementById('parking-context-coverage');
+  if(!summary||!graph||!note)return;
+  try{
+    const response=await fetch(`${API_BASE}/api/parking/analysis?hours=168`);
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    const q=data.quality;
+    summary.textContent=`최근 7일: ${q.samples.toLocaleString()}건 기록 · 관측일 ${q.days}일 · 차량 수 변경 ${q.changes_observed}회 · 5분 초과 공백 ${q.gaps_over_5_minutes}회`;
+    if(coverage){
+      const c=data.context_coverage;
+      coverage.textContent=`추가 정보 연결: 공연 일정 포함 ${c?.event_context_rows??0}건 / 기상청 예보 포함 ${c?.weather_forecast_rows??0}건 (총 ${c?.total_rows??0}건). 공연은 공식 게시 목록, 날씨는 예보이며 미확인 값은 빈칸으로 저장합니다.`;
+    }
+    graph.replaceChildren();
+    const entries=q.hourly_average||[];
+    if(!entries.length){graph.textContent='아직 기록이 없습니다. 백엔드 서버를 켜 두면 수집이 시작됩니다.';}
+    for(const item of entries){
+      const column=document.createElement('div');column.style.cssText='flex:1;min-width:24px;display:flex;flex-direction:column;align-items:center;gap:5px';
+      const bar=document.createElement('div');bar.style.cssText=`width:100%;min-height:4px;height:${Math.max(4,Math.min(100,item.average_occupied/2200*100))}px;background:#879e75;border-radius:5px 5px 0 0`;
+      bar.title=`${String(item.hour).padStart(2,'0')}시 · 평균 ${item.average_occupied.toLocaleString()}대 · ${item.samples}건`;
+      const label=document.createElement('small');label.textContent=String(item.hour).padStart(2,'0');label.style.cssText='font-size:10px;color:#7c8799';
+      column.append(bar,label);graph.append(column);
+    }
+    note.textContent=`${q.basic_training_ready?'기초 데이터 축적 기준 충족(추가 검증 필요)':'아직 기초 학습용 수집 기준 미충족'} · 전체 기록 최소 28일·2,000건·주말 4일·변경 30회가 임시 기준입니다. 이 그래프는 API 조회 기록의 시간별 평균이며 예측값이 아닙니다.`;
+  }catch(error){summary.textContent='수집 현황을 읽을 수 없습니다.';graph.replaceChildren();note.textContent='서버 코드가 최신 버전인지 확인해 주세요.';console.warn(error);}
+}
+loadParkingObservationAnalysis();
+function updateVisitAdvice(){
+  const bestHour=document.getElementById('best-hour');
+  const detail=document.getElementById('best-hour-detail');
+  const anchor=document.getElementById('best-hour-anchor');
+  const official=window.olparkLatestOfficial;
+  if(!bestHour||!detail)return;
+  const simulation=window.olparkCurrentSimulation;
+  if(!simulation || !Number.isFinite(simulation.rate)){
+    if(anchor)anchor.textContent=`${String(koreanClockParts().hour).padStart(2,'0')}:00`;
+    bestHour.textContent='예측 조회 중';
+    detail.textContent='현재 시간대의 AI 결과를 불러오는 중입니다.';
+  }else{
+    const hour=String(simulation.hour).padStart(2,'0');
+    if(anchor)anchor.textContent=`${hour}:00`;
+    const rate=simulation.rate;
+    const level=rate>=90?'만차 수준':rate>=70?'혼잡':rate>=50?'다소혼잡':'여유';
+    bestHour.textContent=`${level} ${rate.toFixed(1)}%`;
+    bestHour.style.color=rate>=90?'#a44238':rate>=70?'#a16a25':'#26345e';
+    detail.textContent=`${hour}:00 기준 AI 추정 지수 · ${simulation.calibration?'최근 공식 주차 조회값 반영':'가상 시뮬레이션'} · 실제 잔여 공간 아님`;
+  }
+  const eventInfo=document.getElementById('forecast-event-info');
+  if(!eventInfo)return;
+  let warning=document.getElementById('official-forecast-caution');
+  if(!warning){
+    warning=document.createElement('p');warning.id='official-forecast-caution';
+    warning.style.cssText='display:none;padding:12px 14px;border-radius:9px;background:#fff2e8;border:1px solid #edc8b3;color:#8b4230;line-height:1.7;font-size:13px';
+    eventInfo.insertAdjacentElement('afterend',warning);
+  }
+  const forecastDate=document.getElementById('forecast-date')?.value;
+  const nowKstParts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const part=name=>nowKstParts.find(p=>p.type===name)?.value;
+  const todayKst=`${part('year')}-${part('month')}-${part('day')}`;
+  const sameDay=forecastDate===todayKst;
+  warning.style.display=sameDay&&official&&official.rate>=70?'block':'none';
+  if(sameDay&&official&&official.rate>=70){
+    warning.textContent=`⚠ 최근 공식 주차대수의 참고 기준 대비 비율은 ${official.rate.toFixed(1)}%입니다. 오늘 가까운 시간의 예측에는 최근 조회값을 반영하며, 그 밖의 시간은 시뮬레이션입니다. 공식 원본 측정 시각과 구역별 실측값이 없어 입차 가능 여부는 보장할 수 없습니다.`;
+  }
+}
+function updateOfficialSnapshotCard(data){
+  const label=document.getElementById('parking-status-label');
+  const status=document.getElementById('parking-status');
+  const detail=document.getElementById('parking-status-detail');
+  if(!label||!status||!detail)return;
+  label.textContent='공식 API 주차현황';
+  if(!data){
+    status.textContent='현황 조회 실패';
+    detail.textContent='공식 자료 조회 불가 · 가상 AI 값으로 대체하지 않습니다.';
+    status.style.color='#8b4230';
+    return;
+  }
+  if(data.is_stale){
+    label.textContent='마지막 저장된 공식 조회값';
+    status.textContent='현재 현황 확인 불가';
+    status.style.color='#8b4230';
+    detail.textContent=`과거 조회 ${Number(data.occupied).toLocaleString()}대 · 최신 API 응답 실패 (현재 주차 현황 아님)`;
+    return;
+  }
+  const rate=Number(data.occupancy_percent);
+  const level=rate>=90?'만차 수준':rate>=70?'혼잡':rate>=50?'다소혼잡':'여유';
+  status.textContent=`${level} ${rate.toFixed(1)}%`;
+  status.style.color=rate>=90?'#a44238':rate>=70?'#a16a25':'#26345e';
+  detail.textContent=`${Number(data.occupied).toLocaleString()}대 / 참고 기준 ${Number(data.capacity).toLocaleString()}대 · API 조회값 (원본 측정 시각 미제공)`;
+}
+function updateCurrentPredictionComparison() {
+  const holder=document.getElementById('live-parking-comparison');
+  if (!holder) return;
+  const simulation=window.olparkCurrentSimulation;
+  const official=window.olparkLatestOfficial;
+  if(!simulation||!official){holder.textContent='AI 예측과 공식 API 관측값을 비교할 정보를 기다리고 있습니다.';return;}
+  if(simulation.calibration){
+    holder.textContent=`현재 ${simulation.hour}시 추정 지수 ${simulation.rate.toFixed(1)}%는 최근 공식 API 합산 주차대수의 참고 기준 대비 비율 ${simulation.calibration.ratio.toFixed(1)}%를 반영한 보정값입니다. 두 수치의 일치는 독립적인 AI 정확도 검증이 아니며, 원본 측정 시각·구역별 잔여 공간은 알 수 없습니다.`;
+    return;
+  }
+  const difference=official.rate-simulation.rate;
+  holder.textContent=`현재 ${simulation.hour}시 AI 가상 예측 ${simulation.rate.toFixed(1)}% / 공식 API 조회값의 기준 대비 비율 ${official.rate.toFixed(1)}% · 차이 ${Math.abs(difference).toFixed(1)}%p (${difference>0?'공식 관측값이 더 높음':'AI 예측이 더 높음 또는 같음'}). 동일 시점 측정값이 아니며, 예측 오차를 검증한 수치는 아닙니다.`;
+}
+async function loadLiveParking() {
+  const targets = ['live-parking-home','live-parking-details']
+    .map(id=>document.getElementById(id)).filter(Boolean);
+  try {
+    const response = await fetch(`${API_BASE}/api/parking/live`);
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if(data.status !== 'success' && data.status !== 'stale') throw new Error('잘못된 주차 응답');
+    const stale=Boolean(data.is_stale);
+    const fetchedAt = new Date(data.fetched_at);
+    const fetchedText = Number.isNaN(fetchedAt.getTime()) ? '조회 시각 미확인' :
+      new Intl.DateTimeFormat('ko-KR', { timeZone:'Asia/Seoul', year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false }).format(fetchedAt);
+    const overCapacity = Boolean(data.over_capacity);
+    window.olparkLatestOfficial=stale?null:{rate:Number(data.occupancy_percent), fetchedAt:data.fetched_at};
+    updateOfficialSnapshotCard(data);
+    updateVisitAdvice();
+    const heroStatus = document.getElementById('hero-parking-summary');
+    if (heroStatus) {
+      const heroStrong = heroStatus.querySelector('strong');
+      if (heroStrong) heroStrong.textContent = stale?'공식 API 지연 · 마지막 저장된 조회값만 확인 가능':`공식 API ${Number(data.occupied).toLocaleString()}대 / 참고 기준 ${Number(data.capacity).toLocaleString()}대 · ${overCapacity?'기준 초과':`비율 ${data.occupancy_percent}%`}`;
+      heroStatus.title = stale?'현재 API 조회 실패 · 저장된 데이터는 실시간 현황이 아닙니다.':`API 조회: ${fetchedText}. 실제 데이터 갱신 시각은 제공되지 않으며 입차 가능 여부를 보장하지 않습니다.`;
+    }
+    for(const target of targets) {
+      target.replaceChildren();
+      const rate=Number(data.occupancy_percent);
+      if(!Number.isFinite(rate)) throw new Error('점유율 데이터 누락');
+      const level=rate>=90?'만차 수준':rate>=70?'혼잡':rate>=50?'다소혼잡':'여유';
+      const tone=rate>=90?'full':rate>=70?'medium':rate>=50?'slight':'';
+      const header=document.createElement('div');header.className='live-info-header';
+      const title=document.createElement('b');
+      title.textContent=stale?'● 마지막 저장된 주차 조회값 (현재 현황 아님)':'● 올림픽공원 공식 주차 현황 (동2문·남2문·북2문)';
+      const badge=document.createElement('span');badge.className=`live-level ${tone}`;
+      badge.textContent=stale?'API 조회 지연':overCapacity?`기준 초과 · ${rate}%`:`${level} · ${rate}%`;
+      header.append(title,badge);
+      const count=document.createElement('strong');
+      count.textContent=`${Number(data.occupied).toLocaleString()} / ${Number(data.capacity).toLocaleString()}대`;
+      const bar=document.createElement('div');bar.className='live-progress';
+      bar.setAttribute('role','progressbar');bar.setAttribute('aria-label','공식 현황 기반 주차 점유율');
+      bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','100');
+      bar.setAttribute('aria-valuenow',String(Math.min(100,Math.max(0,rate))));
+      const fill=document.createElement('div');fill.className=`live-progress-fill ${tone}`;
+      fill.style.setProperty('--occupancy',`${Math.min(100,Math.max(0,rate))}%`);
+      bar.append(fill);
+      const stats=document.createElement('div');stats.className='live-stats';
+      const occupiedText=document.createElement('span');
+      occupiedText.textContent=stale?`과거 조회 시점의 기준 대비 비율: ${rate}%`:`참고 기준 대비 비율: ${rate}%`;
+      const remainingText=document.createElement('span');
+      remainingText.textContent=overCapacity?'공식 차량 수가 참고 기준을 초과하여 잔여 대수 미표시':`단순 차감: ${Number(data.available_estimate).toLocaleString()}대 (입차 보장 아님)`;
+      stats.append(occupiedText,remainingText);
+      const detail=document.createElement('small');
+      const lastSuccess=data.last_successful_fetch_at?new Date(data.last_successful_fetch_at):null;
+      const lastText=lastSuccess&&!Number.isNaN(lastSuccess.getTime())?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(lastSuccess):'확인 불가';
+      detail.textContent=stale?`⚠ 공식 API 접속 실패 · 마지막 성공 조회 ${lastText} (한국시간) · 약 ${Math.floor(Number(data.observation_age_seconds||0)/60)}분 전 저장값으로 현재 주차대수를 알 수 없습니다.`:`공식 JSON API 조회: ${fetchedText} (한국시간) · 원본 데이터 갱신 시각은 미제공 · 2,200대는 안내 페이지 참고 기준입니다.${overCapacity?' 현재 API 차량 수가 참고 기준보다 많아 점유율 해석에 주의가 필요합니다.':''}`;
+      const history=document.createElement('small');
+      const summary=data.history;
+      const changedAt=summary?.last_change_observed_at;
+      const changedText=changedAt?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(changedAt)):'수집 이후 변경 기록 없음';
+      history.style.cssText='display:block;margin-top:8px;line-height:1.6';
+      history.textContent=`📈 최근 24시간 저장 ${summary?.sample_count??0}건 · 마지막 차량 수 변경 관찰: ${changedText} (공식 측정 시각 아님)`;
+      const link=document.createElement('a');
+      link.href=data.source;link.target='_blank';link.rel='noopener noreferrer';
+      link.textContent='공식 주차현황 확인 ↗';
+      const refresh=document.createElement('button');
+      refresh.type='button';refresh.textContent='지금 다시 조회 ↻';
+      refresh.style.cssText='margin-left:12px;padding:5px 10px;border:1px solid #c6cddd;border-radius:8px;background:#fff;color:#27345d;cursor:pointer';
+      refresh.addEventListener('click',()=>loadLiveParking());
+      target.append(header,count,bar,stats,detail,history,document.createElement('br'),link,refresh);
+      if(target.id==='live-parking-home'){
+        const comparison=document.createElement('small');
+        comparison.id='live-parking-comparison';
+        comparison.style.cssText='display:block;margin-top:12px;padding:10px 12px;background:#fff7e9;border-radius:9px;color:#27345d;line-height:1.7';
+        target.append(comparison);
+      }
+    }
+    updateCurrentPredictionComparison();
+  } catch(error) {
+    window.olparkLatestOfficial=null;
+    updateOfficialSnapshotCard(null);
+    updateVisitAdvice();
+    const heroStrong = document.querySelector('#hero-parking-summary strong');
+    if (heroStrong) heroStrong.textContent = '공식 주차 현황 조회 지연 · 아래 링크에서 확인';
+    for(const target of targets){
+      target.replaceChildren();
+      const title=document.createElement('b');title.textContent='● 공식 주차 현황 조회 실패';
+      const detail=document.createElement('small');detail.textContent='현재 주차대수를 확인할 수 없습니다. 아래 공식 사이트에서 확인해 주세요. (예측 결과와 무관)';
+      const link=document.createElement('a');link.href='https://www.ksponco.or.kr/online/main/parking.do';link.target='_blank';link.rel='noopener noreferrer';link.textContent='공식 실시간 주차 현황 ↗';
+      target.append(title,detail,document.createElement('br'),link);
+    }
+    console.warn('공식 주차 현황 조회 실패:',error);
+  }
+}
+loadLiveParking();
+document.getElementById('hero-scroll-parking').addEventListener('click', () => {
+  document.getElementById('live-parking-home').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// 대시보드 '날씨와 공연': 서울 날짜 기준 공식 공연 일정 검색
+async function loadTodayEvents() {
+  const container = document.getElementById('today-events');
+  const summary = document.getElementById('performance-summary');
+  if (!container || !summary) return;
+  const today = document.getElementById('predict-date').value;
+  container.replaceChildren();
+  summary.textContent = '조회 중';
+  const waiting = document.createElement('p');
+  waiting.textContent = `${today} 공식 공연 목록을 확인하고 있습니다...`;
+  container.append(waiting);
+  try {
+    const response = await fetch(`${API_BASE}/api/events/by-date?date=${encodeURIComponent(today)}`);
+    if (!response.ok) throw new Error(`공연 조회 HTTP ${response.status}`);
+    const data = await response.json();
+    if (data.status !== 'success' || !Array.isArray(data.events)) throw new Error('공연 응답 형식 오류');
+    container.replaceChildren();
+    summary.textContent = `${data.events.length}건`;
+    if (data.events.length === 0) {
+      const message = document.createElement('p');
+      message.textContent = '공식 목록에 오늘 날짜와 일치하는 공연이 없습니다.';
+      container.append(message);
+    }
+    for (const performance of data.events) {
+      const row = document.createElement('div');
+      row.className = 'event';
+      const dateBadge = document.createElement('div');
+      dateBadge.className = 'event-time';
+      dateBadge.textContent = performance.start_time || '시간 미정';
+      const details = document.createElement('div');
+      const title = document.createElement('strong');
+      title.textContent = performance.title;
+      const caption = document.createElement('p');
+      const start = performance.start_time ? `시작 ${performance.start_time}` : '시작 시간 확인 필요';
+      const end = performance.end_time ? `종료 예상 ${performance.end_time}` : '종료 시간 확인 필요';
+      caption.textContent = `${performance.place} · ${start} / ${end}`;
+      const note = document.createElement('p');
+      note.textContent = performance.time_note || '공식 회차 정보를 확인해 주세요.';
+      details.append(title, caption);
+      details.append(note);
+      row.append(dateBadge, details);
+      container.append(row);
+    }
+    const warning = document.createElement('p');
+    warning.style.cssText = 'font-size:12px;line-height:1.6;color:#7b899a;margin-top:12px';
+    warning.textContent = '※ 공식 상세 회차에서 확인된 시작 시간만 표시합니다. 종료 시각은 공식 소요시간으로 계산한 예상값이며 실제 종료와 다를 수 있습니다.';
+    container.append(warning);
+  } catch (error) {
+    summary.textContent = '조회 실패';
+    container.replaceChildren();
+    const message = document.createElement('p');
+    message.textContent = '공식 공연 정보를 불러오지 못했습니다. 공연 일정 메뉴 또는 공식 사이트에서 확인해 주세요.';
+    container.append(message);
+    console.error('대시보드 오늘의 공연 조회 실패:', error);
+  }
+}
+loadTodayEvents();
+
+// 날짜별 공식 공연 목록. 검색 시 원래 표시된 날짜 범위를 확인할 수 있습니다.
+function renderDateEvents() {
+  const area=document.getElementById('sub-content');
+  area.replaceChildren();
+  const section=document.createElement('section');section.className='panel';section.style.padding='22px';
+  const heading=document.createElement('h3');heading.textContent='날짜별 올림픽공원 공연 확인';
+  const description=document.createElement('p');description.textContent='공식 공연 상세 페이지에서 해당 날짜의 시작 시간과 소요시간을 확인합니다. 종료 시각은 소요시간 기준 예상값입니다.';
+  const form=document.createElement('form');form.className='event-date-picker';
+  const label=document.createElement('label');label.textContent='공연 날짜 ';
+  const input=document.createElement('input');input.type='date';input.required=true;
+  input.value=document.getElementById('predict-date').value;
+  label.appendChild(input);
+  const button=document.createElement('button');button.type='submit';button.textContent='해당 날짜 공연 조회';
+  form.append(label,button);
+  const output=document.createElement('div');output.setAttribute('role','status');output.textContent='날짜를 선택한 후 조회해 주세요.';
+  const official=document.createElement('p');
+  const link=document.createElement('a');link.href='https://www.ksponco.or.kr/olympicpark/eventInfo/eventInfoListText?mid=a20301010200';
+  link.target='_blank';link.rel='noopener noreferrer';link.textContent='올림픽공원 공식 공연 목록 ↗';
+  official.append('출처: ',link);
+  section.append(heading,description,form,output,official);area.appendChild(section);
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();button.disabled=true;output.replaceChildren();output.textContent='공식 공연 목록을 조회 중입니다...';
+    try {
+      const response=await fetch(`${API_BASE}/api/events/by-date?date=${encodeURIComponent(input.value)}`);
+      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data=await response.json();
+      if(!output.isConnected) return;
+      output.replaceChildren();
+      const notice=document.createElement('p');notice.textContent=`${data.date} · 공식 목록에서 ${data.count}건 확인. ${data.note}`;output.append(notice);
+      if(!data.count){const none=document.createElement('p');none.textContent='검색 결과가 없습니다. 공식 사이트에서 다른 월 또는 최신 목록을 확인해 주세요.';output.append(none);}
+      for(const item of data.events){
+        const card=document.createElement('article');card.className='panel';card.style.padding='16px';card.style.marginBottom='10px';
+        const name=document.createElement('h4');name.textContent=item.title;
+        const details=document.createElement('p');details.textContent=`${item.start_date} ~ ${item.end_date} · ${item.place}`;
+        const times=document.createElement('p');
+        times.textContent=`시작 ${item.start_time || '확인 필요'} · 종료 ${item.end_time ? `${item.end_time} (예상)` : '확인 필요'}`;
+        const note=document.createElement('p');note.textContent=item.time_note || '공식 상세 일정 확인 필요';
+        card.append(name,details,times,note);
+        if(item.detail_url){const more=document.createElement('a');more.href=item.detail_url;more.target='_blank';more.rel='noopener noreferrer';more.textContent='공식 공연 상세 보기 ↗';card.append(more);}
+        output.appendChild(card);
+      }
+    }catch(error){if(output.isConnected)output.textContent='공식 공연 목록 조회에 실패했습니다. 위 공식 링크에서 직접 확인해 주세요.';console.error(error);}
+    finally{if(button.isConnected)button.disabled=false;}
+  });
+  form.requestSubmit();
+}
+
+
+// ======================================
+// 공연정보 API 연동
+// ======================================
+
+async function loadPerformances() {
+
+    const container = document.getElementById(
+        "sub-content"
+    );
+
+    // 데이터 로딩 안내
+    container.replaceChildren();
+
+    const loading = document.createElement("div");
+    loading.className = "performance-status";
+    loading.textContent = "공연정보를 불러오는 중입니다...";
+
+    container.appendChild(loading);
+
+    try {
+
+        // FastAPI 백엔드 호출
+        const response = await fetch(
+            `${API_BASE}/api/performances`
+        );
+
+        if (!response.ok) {
+            throw new Error("API 요청 실패");
+        }
+
+        const data = await response.json();
+
+        container.replaceChildren();
+
+        // 공연 데이터가 없는 경우
+        if (
+            !data.performances ||
+            data.performances.length === 0
+        ) {
+            const empty = document.createElement("div");
+            empty.className = "performance-status";
+            empty.textContent = "조회된 공연정보가 없습니다.";
+
+            container.appendChild(empty);
+            return;
+        }
+
+        const list = document.createElement("div");
+        list.className = "performance-list";
+
+        // 공연 데이터 반복 출력
+        data.performances.forEach(performance => {
+
+            const card = document.createElement("article");
+            card.className = "performance-card";
+
+            const icon = document.createElement("div");
+            icon.className = "performance-icon";
+            icon.textContent = "♫";
+
+            const info = document.createElement("div");
+            info.className = "performance-info";
+
+            const title = document.createElement("h3");
+            title.textContent =
+                performance.title || "제목 없음";
+
+            const meta = document.createElement("div");
+            meta.className = "performance-meta";
+
+            const place = document.createElement("span");
+            place.textContent =
+                "📍 " + (performance.place || "장소 미정");
+
+            const period = document.createElement("span");
+            period.textContent =
+                "🕒 " + (performance.period || "시간 미정");
+
+            const description = document.createElement("p");
+            description.className = "performance-description";
+
+            const fullDescription =
+                performance.description || "상세정보 없음";
+
+            description.textContent =
+                fullDescription.length > 160
+                    ? fullDescription.slice(0, 160) + "..."
+                    : fullDescription;
+
+            meta.append(place, period);
+
+            info.append(title, meta, description);
+
+            card.append(icon, info);
+            list.appendChild(card);
+        });
+
+        container.appendChild(list);
+
+    } catch (error) {
+
+        container.replaceChildren();
+
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "performance-status";
+        errorMessage.textContent =
+            "공연정보를 불러오지 못했습니다. FastAPI 서버를 확인해 주세요.";
+
+        container.appendChild(errorMessage);
+
+        console.error("공연정보 로딩 실패:", error);
+    }
+}
+// ======================================
+// 기상청 날씨 API 연동
+// ======================================
+
+async function loadWeather() {
+    try {
+        const response = await fetch(
+            `${API_BASE}/api/weather/test`
+        );
+
+        if (!response.ok) {
+            throw new Error("날씨 API 요청 실패");
+        }
+
+        const data = await response.json();
+
+        if (data.status !== "success" || !data.weather) {
+            throw new Error("날씨 데이터 형식 오류");
+        }
+
+        const weather = data.weather;
+        const summary = document.getElementById('weather-summary');
+        const summaryDetail = document.getElementById('weather-summary-detail');
+        if (summary) summary.textContent = `${weather.temperature ?? '—'}°`;
+        if (summaryDetail) {
+            const forecastDate = String(data.forecast_date || '');
+            const forecastTime = String(data.forecast_time || '');
+            summaryDetail.textContent = `기상청 ${forecastDate.slice(4,6)}/${forecastDate.slice(6,8)} ${forecastTime.slice(0,2)}시 예보 · ${weather.sky || '상태 미상'}`;
+        }
+        // 기상청의 선택된 예보값을 시나리오 모델 입력으로 사용합니다.
+        const temperatureValue = Number(weather.temperature);
+        const rainValue = Number(weather.rain_probability);
+        if (Number.isFinite(temperatureValue) && Number.isFinite(rainValue)) {
+            modelWeather = {
+                temperature: temperatureValue,
+                rain_probability: Math.max(0, Math.min(100, rainValue))
+            };
+            drawChart();
+            refreshCurrentHourSnapshot();
+        }
+        const weatherCard = document.querySelector(".weather");
+
+        if (weatherCard) {
+            const temperature = weatherCard.querySelector("strong");
+            const description = weatherCard.querySelector("small");
+            const weatherIcon = weatherCard.querySelector(".weather-icon");
+
+            if (temperature) {
+                temperature.textContent = weather.temperature + "°";
+            }
+
+            if (description) {
+                description.textContent =
+                    weather.sky + " · " +
+                    data.forecast_time.slice(0, 2) + "시 예보";
+            }
+
+            if (weatherIcon) {
+                const icons = {
+                    "맑음": "☀️",
+                    "구름 많음": "🌤️",
+                    "흐림": "☁️"
+                };
+
+                weatherIcon.textContent =
+                    icons[weather.sky] || "🌡️";
+            }
+        }
+
+        const weatherLines = document.querySelectorAll(".weather-line");
+
+        if (weatherLines.length >= 2) {
+            const rainValue = weatherLines[0].querySelector("b");
+
+            if (rainValue) {
+                rainValue.textContent =
+                    weather.rain_probability + "%";
+            }
+
+            const rainTypeLabel =
+                weatherLines[1].querySelector("span");
+
+            const rainTypeValue =
+                weatherLines[1].querySelector("b");
+
+            if (rainTypeLabel) {
+                rainTypeLabel.textContent = "강수형태";
+            }
+
+            if (rainTypeValue) {
+                rainTypeValue.textContent =
+                    weather.precipitation_type || "정보 없음";
+            }
+        }
+
+        console.log("기상청 날씨 연동 성공:", weather);
+
+    } catch (error) {
+        console.error("기상청 날씨 연동 오류:", error);
+        const summary = document.getElementById('weather-summary');
+        const summaryDetail = document.getElementById('weather-summary-detail');
+        if (summary) summary.textContent = '조회 실패';
+        if (summaryDetail) summaryDetail.textContent = '기상청 API 연결을 확인해 주세요.';
+    }
+}
+
+loadWeather();
+  </script>
+</body>
+</html>
