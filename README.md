@@ -36,7 +36,8 @@
 | Deployment | GitHub Pages(프론트엔드), Render(백엔드, 배포 구성 준비) |
 
 🧩 시스템 구조
-<img width="992" height="1254" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/c1b546fb-9949-4a4f-93cc-be5ee782dc9a" />
+<img width="992" height="1254" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/fad4baf1-0750-4fbd-8220-6e9779655060" />
+
 예측 처리 방식
 1. 기본 시뮬레이션: 시간, 요일, 기온, 강수확률, 공연 정보를 입력하여 혼잡 지수 계산
 2. 과거 이력 보정: 기록이 충분하면 유사한 날짜·시간 조건의 과거 공식 조회값을 가중 반영
